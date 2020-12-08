@@ -1,0 +1,77 @@
+.phoneLink {
+  color: black !important;
+  font-size: 18px;
+  position: relative;
+
+  &:hover {
+    text-decoration: underline !important;
+  }
+}
+
+.phoneLinkHeader {
+  @extend .phoneLink;
+  font-size: 14px;
+}
+
+.phoneLinkHeader1 {
+  @extend .phoneLink;
+  padding-left: 20px;
+  &:before {
+    content: '';
+    position: absolute;
+    background-image: url('/images/phone.svg');
+    background-size: 14px;
+    width: 14px;
+    height: 14px;
+    left: 0;
+    top: 1px;
+  }
+  font-size: 14px;
+}
+
+.MuiFormLabel-root.Mui-focused {
+  color: var(--base-accentColor) !important;
+}
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: var(--base-accentColor) !important;
+}
+
+.MuiSlider-rail {
+  color: #e1e1e1;
+  width: 4px !important;
+  box-shadow: inset 1px 1px 4px rgba(0, 0, 0, 0.5);
+  border-radius: 5px !important;
+}
+.MuiSlider-track {
+  color: #e1e1e1;
+  width: 4px !important;
+  box-shadow: inset 1px 1px 4px rgba(0, 0, 0, 0.5);
+  border-radius: 5px !important;
+}
+.MuiSlider-thumb {
+  background: linear-gradient(180deg, #ffffff 0%, #c4c4c4 100%), #c4c4c4;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.75);
+  height: 20px !important;
+  width: 20px !important;
+  margin-left: -8px !important;
+}
+.MuiSlider-thumb:hover {
+  box-shadow: none !important;
+}
+.MuiSlider-active {
+  box-shadow: none !important;
+}
+
+.MuiSwitch-thumb {
+  background-color: #c4c4c4 !important;
+  box-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.75);
+}
+.Mui-checked {
+  .MuiSwitch-thumb {
+    background: radial-gradient(var(--base-accentColor) 0%, var(--baseBg) 100%);
+  }
+}
+.MuiSwitch-colorPrimary.Mui-checked + .MuiSwitch-track {
+  background: var(--base-accentColor) !important;
+}

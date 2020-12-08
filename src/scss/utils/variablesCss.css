@@ -1,0 +1,185 @@
+/* :root{
+    --main-font: 'Stolzl';
+    --main-fontSize: 12px;
+    --main-color: #000;
+    --white-color: #fff;
+    --base-accentColor: hsla(205, 90%, 45%, 1);
+    --dangerColor: hsla(25, 100%, 40%, 1);
+    --baseBg: hsla(205, 85%, 50%, 1);
+    --darkBg: hsla(0, 0%, 33%, 1);
+    --overlay-color:  hsla(0, 0%, 100%, 0.5);
+
+    --button-font: 'Stolzl';
+    --button-fontSize: 12px;
+    --button-Shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+    --button-bgColor: hsla(205, 85%, 50%, 1);
+    --button-hoverBG: hsla(205, 100%, 60%, 1);
+
+
+    --link-color: hsla(200, 80%, 50%, 1);
+    --link-hoverColor: hsla(205, 100%, 65%, 1);
+
+    --helper-border-color: hsla(205, 100%, 65%, 1);
+    --helper-Bg-color: hsla(205, 100%, 90%, .9);
+} */
+:root {
+  --main-font: 'Stolzl';
+  --main-fontSize: 14px;
+  --button-fontSize: 14px;
+  --main-color: #000;
+  --white-color: #fff;
+  --base-accentColor: hsla(40, 100%, 50%, 1);
+  --dangerColor: hsla(35, 100%, 50%, 1);
+  --baseBg: hsla(45, 100%, 50%, 1);
+  --darkBg: hsla(0, 0%, 33%, 1);
+  --overlay-color: hsla(0, 0%, 100%, 0.5);
+
+  --button-font: 'Stolzl';
+  --button-Shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+  --button-bgColor: hsla(45, 100%, 50%, 1);
+  --button-hoverBG: hsla(45, 100%, 60%, 1);
+
+  --link-color: hsla(40, 100%, 45%, 1);
+  --link-hoverColor: hsla(45, 100%, 55%, 1);
+
+  --helper-border-color: hsla(45, 100%, 50%, 1);
+  --helper-Bg-color: hsla(45, 100%, 90%, 0.9);
+}
+
+/*
+
+.styleBlue{
+!*!////// styleBlue ///////!*!
+    --main-font: 'Stolzl';
+    --main-color: #000;
+    --white-color: #fff;
+    --base-accentColor: hsla(195, 100%, 50%, 1);
+    --dangerColor: hsla(185, 100%, 50%, 1);
+    --baseBg: hsla(195, 90%, 50%, 1);
+    --darkBg: hsla(0, 0%, 33%, 1);
+    --overlay-color: hsla(0, 0%, 100%, 0.5);
+
+!*button_1*!
+    --button-font: 'Stolzl';
+    --button-Shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+    --button-bgColor: hsla(195, 90%, 45%, 1);
+    --button-hoverBG: hsla(195, 90%, 50%, 1);
+
+!*link_1*!
+    --link-color: hsla(190, 100%, 40%, 1);
+    --link-hoverColor: hsla(190, 100%, 45%, 1);
+
+!*helpers_1*!
+    --helper-border-color: hsla(195, 100%, 50%, 1);
+    --helper-Bg-color: hsla(195, 100%, 90%, .9);
+}
+
+.styleBlue_azure{
+!*!/////// styleBlue_azure ///////!*!
+    --main-font: 'Stolzl';
+    --main-color: #000;
+    --white-color: #fff;
+    --base-accentColor: hsla(190, 80%, 50%, 1);
+    --dangerColor: hsla(185, 100%, 50%, 1);
+    --baseBg: hsla(190, 90%, 45%, 1);
+    --darkBg: hsla(0, 0%, 33%, 1);
+    --overlay-color: hsla(0, 0%, 100%, 0.5);
+
+!*button_2*!
+    --button-font: 'Stolzl';
+    --button-Shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+    --button-bgColor: hsla(190, 90%, 50%, 1);
+    --button-hoverBG: hsla(190, 90%, 55%, 1);
+
+!*link_2*!
+    --link-color: hsla(190, 90%, 40%, 1);
+    --link-hoverColor: hsla(190, 90%, 50%, 1);
+
+!*helpers_2*!
+    --helper-border-color: hsla(190, 80%, 50%, 1);
+    --helper-Bg-color: hsla(190, 100%, 90%, .9);
+}
+.styleYellow_tangerine{
+!*!////// styleYellow_tangerine ///////!*!
+    --main-font: 'Stolzl';
+    --main-color: #000;
+    --white-color: #fff;
+    --base-accentColor: hsla(40, 90%, 45%, 1);
+    --dangerColor: hsla(25, 100%, 40%, 1);
+    --baseBg: hsla(40, 95%, 55%, 1);
+    --darkBg: hsla(0, 0%, 33%, 1);
+    --overlay-color:  hsla(0, 0%, 100%, 0.5);
+
+!*button_0*!
+    --button-font: 'Stolzl';
+    --button-Shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+    --button-bgColor: hsla(40, 95%, 55%, 1);
+    --button-hoverBG: hsla(40, 100%, 65%, 1);
+
+!*link_0*!
+    --link-color: hsla(35, 100%, 40%, 1);
+    --link-hoverColor: hsla(40, 100%, 50%, 1);
+!*helpers_0*!
+    --helper-border-color: hsla(40, 90%, 45%, 1);
+    --helper-Bg-color: hsla(40, 100%, 90%, .9);
+}
+
+.styleYellow{
+!*!////// styleYellow ///////!*!
+    --main-font: 'Stolzl';
+    --main-color: #000;
+    --white-color: #fff;
+    --base-accentColor: hsla(40, 100%, 50%, 1);
+    --dangerColor: hsla(35, 100%, 50%, 1);
+    --baseBg: hsla(45, 100%, 50%, 1);
+    --darkBg: hsla(0, 0%, 33%, 1);
+    --overlay-color: hsla(0, 0%, 100%, 0.5);
+
+!*button_1*!
+    --button-font: 'Stolzl';
+    --button-Shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+    --button-bgColor: hsla(45, 100%, 50%, 1);
+    --button-hoverBG: hsla(45, 100%, 60%, 1);
+
+!*link_1*!
+    --link-color: hsla(40, 100%, 45%, 1);
+    --link-hoverColor: hsla(45, 100%, 55%, 1);
+
+!*helpers_1*!
+    --helper-border-color: hsla(45, 100%, 50%, 1);
+    --helper-Bg-color: hsla(45, 100%, 90%, .9);
+}
+
+.styleYellow_lemon{
+!*!////// styleYellow_lemon ///////!*!
+    --main-font: 'Stolzl';
+    --main-color: #000;
+    --white-color: #fff;
+    --base-accentColor: hsla(50, 80%, 50%, 1);
+    --dangerColor: hsla(35, 100%, 50%, 1);
+    --baseBg: hsla(50, 90%, 50%, 1);
+    --darkBg: hsla(0, 0%, 33%, 1);
+    --overlay-color: hsla(0, 0%, 100%, 0.5);
+
+!*button_2*!
+    --button-font: 'Stolzl';
+    --button-Shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+    --button-bgColor: hsla(50, 90%, 50%, 1);
+    --button-hoverBG: hsla(50, 100%, 50%, 1);
+
+!*link_2*!
+    --link-color: hsla(50, 85%, 45%, 1);
+    --link-hoverColor: hsla(50, 90%, 50%, 1);
+
+!*helpers_2*!
+    --helper-border-color: hsla(50, 80%, 50%, 1);
+    --helper-Bg-color: hsla(50, 100%, 90%, .9);
+}
+
+.bigger{
+    --main-fontSize: 14px;
+    --button-fontSize: 14px;
+}
+
+
+*/

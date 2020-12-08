@@ -1,0 +1,369 @@
+.Calculator {
+  .main {
+    &:last-of-type {
+      padding-top: 15px;
+    }
+    .title {
+      padding-top: 20px;
+      margin-bottom: 10px;
+
+      h1 {
+        text-align: left;
+      }
+    }
+
+    .input {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+
+      p {
+        padding-bottom: 10px;
+        display: none;
+      }
+
+      .wrapper {
+        height: auto;
+        position: relative;
+        transition: box-shadow 0.3s;
+        width: 100%;
+        box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+
+        svg {
+          cursor: pointer;
+          position: absolute;
+          right: 7px;
+          top: 10px;
+          transform: rotate(90deg);
+          height: 20px;
+          width: 20px;
+          fill: var(--base-accentColor);
+        }
+
+        &:hover {
+          box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+        }
+
+        .filter {
+          width: 100%;
+          min-height: 40px;
+          //text-transform: capitalize;
+          cursor: pointer;
+          border: 1px solid #c4c4c4;
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          padding-left: 21px;
+        }
+
+        .filterActive {
+          @extend .filter;
+          position: relative;
+
+          span {
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            display: block;
+            width: 22px;
+            height: 22px;
+            background-image: url('/images/sale/ellipse.svg');
+          }
+        }
+
+        .stretch {
+          border-top: none;
+          width: 100%;
+          position: absolute;
+          height: 0;
+          overflow: hidden;
+          background-color: var(--white-color);
+          z-index: 12;
+          border-top: none;
+
+          ul {
+            li {
+              //padding: 0 21px;
+              list-style: disc inside;
+              transition: 0.4s;
+              min-height: 50px;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              //text-transform: uppercase;
+              margin: 0 20px;
+              border-bottom: 1px solid rgb(196, 196, 196);
+
+              &:last-of-type {
+                //margin-top: 25px;
+                border-bottom: none;
+              }
+              &:nth-child(2) {
+                //margin-top: 25px;
+                //border-bottom: none;
+              }
+              &:hover {
+                color: var(--base-accentColor);
+                text-decoration: underline;
+                // color: var(--white-color);
+                // background-color: var(--baseBg);
+              }
+            }
+
+            .activeLi {
+              color: var(--base-accentColor);
+              text-decoration: underline;
+            }
+          }
+        }
+
+        .stretchActive {
+          @extend .stretch;
+          height: auto;
+          box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+
+          border: 1px solid #c4c4c4;
+          border-top: none;
+        }
+      }
+
+      .wrapperActive {
+        @extend .wrapper;
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+      }
+
+      h3 {
+        line-height: 14px;
+      }
+
+      .select {
+        width: 250px;
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+        border: 1px solid #c4c4c4;
+        padding: 13px 9px 13px 17px;
+        color: var(--base-accentColor);
+        //text-transform: lowercase;
+        cursor: pointer;
+      }
+    }
+
+    .sliderHeader {
+      display: flex;
+      justify-content: space-between;
+      padding-bottom: 20px;
+
+      p {
+        font-size: 14px;
+        line-height: 17px;
+
+        span {
+          font-weight: 600;
+        }
+
+        &:last-of-type {
+          text-align: right;
+        }
+      }
+    }
+
+    .sliderBlock {
+      margin: 0 auto;
+      // background: url('/images/calculator/motor.png') center no-repeat;
+      position: relative;
+      .imgBlock {
+        position: absolute;
+        top: 0;
+        right: calc(50% - 180px);
+      }
+      .slidersWrapper {
+        padding: 0 10px;
+        height: 220px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+
+        .rightSlider {
+          //margin-top: 35px;
+          transform: translateX(10px);
+          position: absolute;
+          width: 120px;
+          padding-right: 10px;
+          height: 100%;
+          right: 0;
+          background-color: rgba(255, 255, 255, 0.75);
+
+          .slider {
+            height: 210px;
+
+            .valuesBlock {
+              padding-top: 10px;
+              padding-right: 10px;
+              height: 225px;
+              position: absolute;
+              display: flex;
+              flex-direction: column;
+              justify-content: space-between;
+              right: 30px;
+              top: -8px;
+              text-align: right;
+
+              span {
+                font-size: 14px;
+                color: #000000;
+                opacity: 0.35;
+                cursor: pointer;
+              }
+
+              .spanActive {
+                font-size: 18px;
+                color: var(--base-accentColor);
+                opacity: 1;
+                font-weight: 500;
+              }
+            }
+
+            .rightSliderWrapper {
+              padding-top: 10px;
+              text-align: right;
+              height: 100%;
+            }
+          }
+        }
+      }
+    }
+
+    .switcherBlock {
+      padding: 0 10px;
+      display: flex;
+      flex-direction: column;
+
+      .checkbox {
+        .label {
+          margin-left: -10px;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .activeSenderBlock {
+      margin-top: 15px;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 10px 10px;
+      width: 100%;
+
+      div {
+        height: 50px;
+        width: 50%;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 500;
+        text-transform: uppercase;
+        background-color: var(--button-bgColor);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.4s, box-shadow 0.4s;
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
+        &:hover {
+          background-color: var(--button-hoverBG);
+          box-shadow: var(--button-Shadow);
+        }
+
+        &:first-of-type {
+          border: 1px solid #c4c4c4;
+          cursor: default;
+          background-color: var(--white-color);
+          border-right: none;
+          box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.25);
+          font-size: 24px;
+          font-weight: 500;
+          color: #000000;
+
+          &:hover {
+            background-color: transparent;
+          }
+        }
+      }
+
+      span {
+        text-align: left;
+      }
+    }
+
+    .senderBlock {
+      @extend .activeSenderBlock;
+
+      div {
+        background-color: #cccccc;
+
+        &:first-of-type {
+          color: #c4c4c4;
+        }
+
+        &:last-of-type {
+          &:hover {
+            background-color: #cccccc;
+            box-shadow: none;
+          }
+        }
+
+        cursor: auto;
+      }
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .Calculator {
+    min-width: 576px;
+    margin: 0 auto;
+
+    .main {
+      background-color: var(--white-color);
+      margin: 0 auto;
+      padding: 0 10px;
+
+      .input {
+        h2 {
+          padding-bottom: 0;
+          max-width: 100px;
+        }
+        p {
+          display: inline-block;
+        }
+        .wrapper {
+          width: 70%;
+        }
+      }
+
+      .sliderBlock {
+        margin: 0 auto;
+        min-width: 550px;
+        width: 100%;
+        background-repeat: no-repeat;
+        background-position: 50% 0;
+      }
+
+      .activeSenderBlock {
+        margin-top: 5px;
+        margin-left: auto;
+        margin-right: 0;
+        width: calc(100% * 4 / 8);
+
+        div {
+          height: 37px;
+          font-size: 12px;
+
+          &:first-of-type {
+            font-size: 18px;
+          }
+        }
+      }
+    }
+  }
+}
