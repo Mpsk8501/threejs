@@ -1,4 +1,3 @@
-import ReactDOM from 'react-dom'
 import * as THREE from 'three'
 import React, { Suspense, useEffect, useRef, useState } from 'react'
 import { Canvas, useLoader, useFrame } from 'react-three-fiber'
@@ -6,8 +5,10 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { useGLTFLoader } from 'drei'
 
 // This component was auto-generated from GLTF by: https://github.com/react-spring/gltfjsx
+
 function Bird({ url }) {
   // const { nodes, materials, animations } = useLoader(GLTFLoader, url)
+  const scene = useLoader(GLTFLoader, url)
 
   const { nodes, materials, animations } = useGLTFLoader(url, true)
 
@@ -38,15 +39,32 @@ function Bird({ url }) {
   )
 }
 
-export default function chair2() {
+const Asset = ({ url }) => {
+  const ref = useRef()
+  const gltf = useLoader(GLTFLoader, url)
+  const [mixer] = useState(() => new THREE.AnimationMixer())
+  useFrame(() => {
+    mixer.update(0.05)
+  })
+  const animate = () => {
+    console.log(gltf)
+    mixer.clipAction(gltf.animations[0], ref.current).play()
+  }
+  return <primitive ref={ref} onClick={() => animate()} object={gltf.scene} />
+}
+
+const chair2 = () => {
   return (
-    <Canvas camera={{ position: [3, 4, 0] }}>
+    <Canvas camera={{ position: [700, 250, 100] }}>
       <ambientLight intensity={2} />
       <pointLight position={[40, 40, 40]} />
       <Suspense fallback={null}>
-        {/* <Bird url={'./ElectricMotor_0263.glb'} /> */}
-        <Bird url={'./FA1g-Flamingo.glb'} />
+        {/* <Bird url={'./motor.glb'} /> */}
+        <Asset url={'./motor.glb'} />
+        {/* <Bird url={'./FA1g-Flamingo.glb'} /> */}
       </Suspense>
     </Canvas>
   )
 }
+
+export default chair2

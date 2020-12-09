@@ -173,6 +173,7 @@
       // background: url('/images/calculator/motor.png') center no-repeat;
       position: relative;
       .imgBlock {
+        z-index: 10;
         position: absolute;
         top: 0;
         right: calc(50% - 180px);

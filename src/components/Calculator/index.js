@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react'
-import Chair from './chair.js'
 import Chair2 from './chair2.js'
 import classes from './Calculator.module.scss'
 
