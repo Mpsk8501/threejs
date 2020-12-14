@@ -1,68 +1,96 @@
-import * as THREE from 'three'
-import React, { Suspense, useEffect, useRef, useState } from 'react'
-import { Canvas, useLoader, useFrame } from 'react-three-fiber'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { useGLTFLoader } from 'drei'
+import React, { Suspense, useEffect, useState } from 'react'
+import { Canvas, useFrame } from 'react-three-fiber'
+import {
+  useGLTF,
+  useTexture,
+  useAnimations,
+  OrbitControls,
+  Stars,
+  Sky,
+  Shadow,
+  TrackballControls,
+} from '@react-three/drei'
 
-// This component was auto-generated from GLTF by: https://github.com/react-spring/gltfjsx
-
-function Bird({ url }) {
-  // const { nodes, materials, animations } = useLoader(GLTFLoader, url)
-  const scene = useLoader(GLTFLoader, url)
-
-  const { nodes, materials, animations } = useGLTFLoader(url, true)
-
-  const group = useRef()
-  const [mixer] = useState(() => new THREE.AnimationMixer())
-  useEffect(
-    () => void mixer.clipAction(animations[0], group.current).play(),
-    []
-  )
-  useFrame(() => {
-    mixer.update(0.05)
+const delay = (ms) =>
+  new Promise((resolve) => {
+    setTimeout(() => {
+      resolve()
+    }, ms)
   })
 
-  return (
-    <group key={1} position={[1, 1, 1]} dispose={null}>
-      <scene name="Scene">
-        <mesh
-          ref={group}
-          name="Object_0"
-          morphTargetDictionary={nodes.Object_0.morphTargetDictionary}
-          morphTargetInfluences={nodes.Object_0.morphTargetInfluences}
-          rotation={[1.5707964611537577, 0, 0]}
-          geometry={nodes.Object_0.geometry}
-          material={materials.Material_0_COLOR_0}
-        />
-      </scene>
-    </group>
-  )
-}
+const Asset = ({ url, animType }) => {
+  const { animations, scene, nodes } = useGLTF(url)
+  const { ref, mixer, names, actions, clips } = useAnimations(animations)
 
-const Asset = ({ url }) => {
-  const ref = useRef()
-  const gltf = useLoader(GLTFLoader, url)
-  const [mixer] = useState(() => new THREE.AnimationMixer())
+  const [update, setUpdate] = useState(0.01)
+
   useFrame(() => {
-    mixer.update(0.05)
+    //nodes.RotorAxis.rotation.y += 0.05
+
+    ref.current.rotation.y += 0.005
+    mixer.update(update)
   })
-  const animate = () => {
-    console.log(gltf)
-    mixer.clipAction(gltf.animations[0], ref.current).play()
+
+  console.log(nodes, ref)
+
+  useEffect(() => {
+    animate()
+  }, [animType])
+  const animate = async () => {
+    for (let i in actions) {
+      actions[i].reset()
+      actions[i].stop()
+    }
+
+    actions[names[animType]].clampWhenFinished = true
+    actions[names[animType]].repetitions = 1
+    actions[names[animType]].reset().play()
+
+    await delay(1000)
+    setUpdate(-0.05)
+    actions[names[animType]].reset().play()
+    await delay(1000)
+    setUpdate(0.01)
   }
-  return <primitive ref={ref} onClick={() => animate()} object={gltf.scene} />
+  return <primitive ref={ref} onClick={() => animate()} object={scene} />
 }
 
-const chair2 = () => {
+const Lights = () => {
   return (
-    <Canvas camera={{ position: [700, 250, 100] }}>
-      <ambientLight intensity={2} />
-      <pointLight position={[40, 40, 40]} />
+    <>
+      {/* Ambient Light illuminates lights for all objects */}
+      <ambientLight intensity={0.3} />
+      {/* Diretion light */}
+      <directionalLight position={[10, 10, 5]} intensity={1} />
+      <directionalLight
+        castShadow
+        position={[0, 10, 0]}
+        intensity={1.5}
+        shadow-mapSize-width={1024}
+        shadow-mapSize-height={1024}
+        shadow-camera-far={50}
+        shadow-camera-left={-10}
+        shadow-camera-right={10}
+        shadow-camera-top={10}
+        shadow-camera-bottom={-10}
+      />
+      {/* Spotlight Large overhead light */}
+      <spotLight intensity={1} position={[1000, 0, 0]} castShadow />
+    </>
+  )
+}
+
+const chair2 = ({ animType = 2 }) => {
+  return (
+    <Canvas camera={{ position: [1, 1, 1], far: 1000 }}>
+      <Lights />
       <Suspense fallback={null}>
-        {/* <Bird url={'./motor.glb'} /> */}
-        <Asset url={'./motor.glb'} />
-        {/* <Bird url={'./FA1g-Flamingo.glb'} /> */}
+        <Asset animType={animType} url={'/Motor15.gltf'} />
       </Suspense>
+
+      <Sky inclination={0.52} azimuth={0.3} />
+      <OrbitControls />
+      {/* <TrackballControls /> */}
     </Canvas>
   )
 }

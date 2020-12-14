@@ -13,21 +13,21 @@
   font-size: 14px;
 }
 
-.phoneLinkHeader1 {
-  @extend .phoneLink;
-  padding-left: 20px;
-  &:before {
-    content: '';
-    position: absolute;
-    background-image: url('/images/phone.svg');
-    background-size: 14px;
-    width: 14px;
-    height: 14px;
-    left: 0;
-    top: 1px;
-  }
-  font-size: 14px;
-}
+// .phoneLinkHeader1 {
+//   @extend .phoneLink;
+//   padding-left: 20px;
+//   &:before {
+//     content: '';
+//     position: absolute;
+//     background-image: url('/images/phone.svg');
+//     background-size: 14px;
+//     width: 14px;
+//     height: 14px;
+//     left: 0;
+//     top: 1px;
+//   }
+//   font-size: 14px;
+// }
 
 .MuiFormLabel-root.Mui-focused {
   color: var(--base-accentColor) !important;

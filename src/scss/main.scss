@@ -1,7 +1,7 @@
 @import 'utils/reset';
 @import './utils/fonts';
-@import './utils/carusel';
-@import './utils/sliderItem';
+// @import './utils/carusel';
+// @import './utils/sliderItem';
 @import './utils/variablesCss';
 
 html {
@@ -131,13 +131,13 @@ a {
     background: none;
   }
 
-  .bgWrapperNew {
-    margin: 0 auto;
-    max-width: 1920px;
-    background: url('/images/bgNew.jpg') right -250px top no-repeat fixed,
-      url('/images/bgNew.jpg') left -250px top no-repeat fixed;
-    background-size: 930px 570px;
-  }
+  // .bgWrapperNew {
+  //   margin: 0 auto;
+  //   max-width: 1920px;
+  //   background: url('/images/bgNew.jpg') right -250px top no-repeat fixed,
+  //     url('/images/bgNew.jpg') left -250px top no-repeat fixed;
+  //   background-size: 930px 570px;
+  // }
 }
 
 @media (min-width: 1000px) {
@@ -146,12 +146,12 @@ a {
     padding: 0 calc((100% - 200px) / 8);
   }
 
-  .bgWrapperNew {
-    max-width: 1920px;
-    background: url('/images/bgNew.jpg') right -170px top no-repeat fixed,
-      url('/images/bgNew.jpg') left -170px top no-repeat fixed;
-    background-size: 930px 570px;
-  }
+  // .bgWrapperNew {
+  //   max-width: 1920px;
+  //   background: url('/images/bgNew.jpg') right -170px top no-repeat fixed,
+  //     url('/images/bgNew.jpg') left -170px top no-repeat fixed;
+  //   background-size: 930px 570px;
+  // }
 
   .container {
     margin: 0 100px;
@@ -167,15 +167,15 @@ a {
   .container {
     margin: 0 auto;
   }
-  .bgWrapperNew {
-    background: url('/images/bgNew.jpg') calc(50% - 490px) top/930px 570px
-        no-repeat fixed,
-      url('/images/bgNew.jpg') calc(50% + 490px) top/930px 570px no-repeat fixed;
+  // .bgWrapperNew {
+  //   background: url('/images/bgNew.jpg') calc(50% - 490px) top/930px 570px
+  //       no-repeat fixed,
+  //     url('/images/bgNew.jpg') calc(50% + 490px) top/930px 570px no-repeat fixed;
 
-    .fixed {
-      position: fixed;
-    }
-  }
+  //   .fixed {
+  //     position: fixed;
+  //   }
+  // }
 }
 
 @import './ui';

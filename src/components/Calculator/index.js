@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Chair2 from './chair2.js'
+
 import classes from './Calculator.module.scss'
 
 import Slider from '@material-ui/core/Slider'
@@ -168,9 +169,7 @@ const returnSpeedRealValue = (value) => {
 }
 
 export const Calculator = ({ tag_h1 = null, isActive = true, coeff }) => {
-  const [data, setData] = useState({
-    speed: 0.01,
-  })
+  const [animType, setAnimType] = useState(0)
 
   const [calcResult, setCalcResult] = useState(0)
   const [activeSlider, setActiveSlider] = useState(4)
@@ -224,9 +223,6 @@ export const Calculator = ({ tag_h1 = null, isActive = true, coeff }) => {
     }
 
     calcResultHandler()
-    setData({
-      speed: data.speed + 0.01,
-    })
   }, [activeSlider, sliderValue, inputValue, coeff])
 
   const [filterImg, setFilterImg] = useState('ЭД с короткозамкнутым ротором')
@@ -255,11 +251,12 @@ export const Calculator = ({ tag_h1 = null, isActive = true, coeff }) => {
 
   const inputValueRef = useRef('1.001')
 
-  const selectFilterHandler = (value) => {
+  const selectFilterHandler = (value, num) => {
     inputValueRef.current = value
     setFilterActiveType(value)
     setFilterImg(returnOptionText(value))
     setInputValue(value)
+    setAnimType(num)
   }
 
   const selectImageHandler = (value) => {
@@ -267,171 +264,193 @@ export const Calculator = ({ tag_h1 = null, isActive = true, coeff }) => {
   }
 
   return (
-    <div className={classes.Calculator}>
-      <div className={'containerNew'}>
-        <div className={classes.main}>
-          <header className={classes.title}>
-            <h1>{tag_h1 || 'Расчитать онлайн'}</h1>
-          </header>
-          <div className={classes.input}>
-            <p>Замена обмотки:</p>
-            <div
-              className={openFilter ? classes.wrapperActive : classes.wrapper}
-            >
-              <svg
-                onClick={openFilterHandler}
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-              >
-                <title>arrow_forward_ios</title>
-                <path d="M5.859 4.125l2.156-2.109 9.984 9.984-9.984 9.984-2.156-2.109 7.922-7.875z"></path>
-              </svg>
-              <div onClick={openFilterHandler} className={classes.filter}>
-                {filterImg}
-                <span></span>
-              </div>
+    <>
+      <div className={classes.Calculator}>
+        <div className={'containerNew'}>
+          <div className={classes.main}>
+            <header className={classes.title}>
+              <h1>{tag_h1 || 'Расчитать онлайн'}</h1>
+            </header>
+            <div className={classes.input}>
+              <p>Замена обмотки:</p>
               <div
-                className={openFilter ? classes.stretchActive : classes.stretch}
+                className={openFilter ? classes.wrapperActive : classes.wrapper}
               >
-                <ul>
-                  <li
-                    className={
-                      filterActiveType === '1.001' ? classes.activeLi : ''
-                    }
-                    onMouseEnter={() => selectImageHandler('1.001')}
-                    onClick={() => selectFilterHandler('1.001')}
-                  >
-                    {returnOptionText('1.001')}
-                  </li>
-                  <li
-                    className={
-                      filterActiveType === '0.9' ? classes.activeLi : ''
-                    }
-                    onMouseEnter={() => selectImageHandler('0.9')}
-                    onClick={() => selectFilterHandler('0.9')}
-                  >
-                    {returnOptionText('0.9')}
-                  </li>
+                <svg
+                  onClick={openFilterHandler}
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                >
+                  <title>arrow_forward_ios</title>
+                  <path d="M5.859 4.125l2.156-2.109 9.984 9.984-9.984 9.984-2.156-2.109 7.922-7.875z"></path>
+                </svg>
+                <div onClick={openFilterHandler} className={classes.filter}>
+                  {filterImg}
+                  <span></span>
+                </div>
+                <div
+                  className={
+                    openFilter ? classes.stretchActive : classes.stretch
+                  }
+                >
+                  <ul>
+                    <li
+                      className={
+                        filterActiveType === '1.001' ? classes.activeLi : ''
+                      }
+                      onMouseEnter={() => selectImageHandler('1.001')}
+                      onClick={() => selectFilterHandler('1.001', 0)}
+                    >
+                      {returnOptionText('1.001')}
+                    </li>
+                    <li
+                      className={
+                        filterActiveType === '0.9' ? classes.activeLi : ''
+                      }
+                      onMouseEnter={() => selectImageHandler('0.9')}
+                      onClick={() => selectFilterHandler('0.9', 1)}
+                    >
+                      {returnOptionText('0.9')}
+                    </li>
 
-                  <li
-                    className={filterActiveType === '1' ? classes.activeLi : ''}
-                    onMouseEnter={() => selectImageHandler('1')}
-                    onClick={() => selectFilterHandler('1')}
-                  >
-                    {returnOptionText('1')}
-                  </li>
+                    <li
+                      className={
+                        filterActiveType === '1' ? classes.activeLi : ''
+                      }
+                      onMouseEnter={() => selectImageHandler('1')}
+                      onClick={() => selectFilterHandler('1', 2)}
+                    >
+                      {returnOptionText('1')}
+                    </li>
 
-                  <li
-                    className={filterActiveType === '0' ? classes.activeLi : ''}
-                    onMouseEnter={() => selectImageHandler('0')}
-                    onClick={() => selectFilterHandler('0')}
-                  >
-                    {returnOptionText('0')}
-                  </li>
-                </ul>
+                    <li
+                      className={
+                        filterActiveType === '0' ? classes.activeLi : ''
+                      }
+                      onMouseEnter={() => selectImageHandler('0')}
+                      onClick={() => selectFilterHandler('0', 2)}
+                    >
+                      {returnOptionText('0')}
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
-          </div>
-          <div className={classes.sliderHeader}>
-            <p>
-              <span>POWER</span>, кВт
-            </p>
-            <p>
-              <span>SPEED</span>, об/мин
-            </p>
-          </div>
-        </div>
-        <div className={classes.main}>
-          <div className={classes.sliderBlock}>
-            <div className={classes.imgBlock}>
-              <Chair2 data={data} />
-              {/* <img src="/images/calculator/motor.png" alt="motor" /> */}
+            <div className={classes.sliderHeader}>
+              <p>
+                <span>POWER</span>, кВт
+              </p>
+              <p>
+                <span>SPEED</span>, об/мин
+              </p>
             </div>
-            <div className={classes.slidersWrapper}>
-              <LeftSlider
-                setSlide={setActiveSlider}
-                activeSlide={activeSlider}
-              />
-              <div className={classes.rightSlider}>
-                <div className={classes.slider}>
-                  <div className={classes.valuesBlock}>
-                    <span
-                      onClick={() => speedClickHandler(5)}
-                      className={sliderValue === 5 ? classes.spanActive : null}
-                    >
-                      до 500
-                    </span>
-                    <span
-                      onClick={() => speedClickHandler(4)}
-                      className={sliderValue === 4 ? classes.spanActive : null}
-                    >
-                      от 500
-                    </span>
-                    <span
-                      onClick={() => speedClickHandler(3)}
-                      className={sliderValue === 3 ? classes.spanActive : null}
-                    >
-                      750
-                    </span>
-                    <span
-                      onClick={() => speedClickHandler(2)}
-                      className={sliderValue === 2 ? classes.spanActive : null}
-                    >
-                      1000
-                    </span>
-                    <span
-                      onClick={() => speedClickHandler(1)}
-                      className={sliderValue === 1 ? classes.spanActive : null}
-                    >
-                      1500
-                    </span>
-                    <span
-                      onClick={() => speedClickHandler(0)}
-                      className={sliderValue === 0 ? classes.spanActive : null}
-                    >
-                      3000
-                    </span>
-                  </div>
-                  <div className={classes.rightSliderWrapper}>
-                    <Slider
-                      orientation="vertical"
-                      aria-label={returnSpeedRealValue(sliderValue)}
-                      step={1}
-                      min={0}
-                      max={5}
-                      name={'sliderB'}
-                      value={typeof sliderValue === 'number' ? sliderValue : 0}
-                      onChange={handleSliderChange}
-                    />
+          </div>
+          <div className={classes.main}>
+            <div className={classes.sliderBlock}>
+              <div className={classes.imgBlock}>
+                <Chair2 animType={animType} />
+                {/* <img src="/images/calculator/motor.png" alt="motor" /> */}
+              </div>
+              <div className={classes.slidersWrapper}>
+                <LeftSlider
+                  setSlide={setActiveSlider}
+                  activeSlide={activeSlider}
+                />
+                <div className={classes.rightSlider}>
+                  <div className={classes.slider}>
+                    <div className={classes.valuesBlock}>
+                      <span
+                        onClick={() => speedClickHandler(5)}
+                        className={
+                          sliderValue === 5 ? classes.spanActive : null
+                        }
+                      >
+                        до 500
+                      </span>
+                      <span
+                        onClick={() => speedClickHandler(4)}
+                        className={
+                          sliderValue === 4 ? classes.spanActive : null
+                        }
+                      >
+                        от 500
+                      </span>
+                      <span
+                        onClick={() => speedClickHandler(3)}
+                        className={
+                          sliderValue === 3 ? classes.spanActive : null
+                        }
+                      >
+                        750
+                      </span>
+                      <span
+                        onClick={() => speedClickHandler(2)}
+                        className={
+                          sliderValue === 2 ? classes.spanActive : null
+                        }
+                      >
+                        1000
+                      </span>
+                      <span
+                        onClick={() => speedClickHandler(1)}
+                        className={
+                          sliderValue === 1 ? classes.spanActive : null
+                        }
+                      >
+                        1500
+                      </span>
+                      <span
+                        onClick={() => speedClickHandler(0)}
+                        className={
+                          sliderValue === 0 ? classes.spanActive : null
+                        }
+                      >
+                        3000
+                      </span>
+                    </div>
+                    <div className={classes.rightSliderWrapper}>
+                      <Slider
+                        orientation="vertical"
+                        aria-label={returnSpeedRealValue(sliderValue)}
+                        step={1}
+                        min={0}
+                        max={5}
+                        name={'sliderB'}
+                        value={
+                          typeof sliderValue === 'number' ? sliderValue : 0
+                        }
+                        onChange={handleSliderChange}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className={classes.main}>
-          <div
-            className={
-              !isActive ? classes.senderBlock : classes.activeSenderBlock
-            }
-          >
-            <div>
-              <span title={'цена указана с ндс'}>
-                {calcResult}
-                {!isActive ? '+' : ''} &#x20bd;
-              </span>
-            </div>
-            <div>
-              <span>
-                уточнить <br /> стоимость
-              </span>
+          <div className={classes.main}>
+            <div
+              className={
+                !isActive ? classes.senderBlock : classes.activeSenderBlock
+              }
+            >
+              <div>
+                <span title={'цена указана с ндс'}>
+                  {calcResult}
+                  {!isActive ? '+' : ''} &#x20bd;
+                </span>
+              </div>
+              <div>
+                <span>
+                  уточнить <br /> стоимость
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }

@@ -69,7 +69,7 @@
             display: block;
             width: 22px;
             height: 22px;
-            background-image: url('/images/sale/ellipse.svg');
+            // background-image: url('/public/images/sale/ellipse.svg');
           }
         }
 
@@ -173,10 +173,12 @@
       // background: url('/images/calculator/motor.png') center no-repeat;
       position: relative;
       .imgBlock {
+        width: 100vh;
+        height: 100vh;
         z-index: 10;
         position: absolute;
         top: 0;
-        right: calc(50% - 180px);
+        //right: calc(50% - 180px);
       }
       .slidersWrapper {
         padding: 0 10px;
