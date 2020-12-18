@@ -1,15 +1,13 @@
 import React, { Suspense, useEffect, useState } from 'react'
-import { Canvas, useFrame } from 'react-three-fiber'
+import { Canvas, useFrame, useThree } from 'react-three-fiber'
+import { UnsignedByteType, PMREMGenerator } from 'three'
 import {
   useGLTF,
   useTexture,
   useAnimations,
   OrbitControls,
-  Stars,
-  Sky,
-  Shadow,
-  TrackballControls,
 } from '@react-three/drei'
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js'
 
 const delay = (ms) =>
   new Promise((resolve) => {
@@ -19,78 +17,66 @@ const delay = (ms) =>
   })
 
 const Asset = ({ url, animType }) => {
-  const { animations, scene, nodes } = useGLTF(url)
-  const { ref, mixer, names, actions, clips } = useAnimations(animations)
+  const { gl, scene } = useThree()
+  const pmremGenerator = new PMREMGenerator(gl)
+  const { animations, scene: motor, nodes, materials } = useGLTF(url)
+  const { ref, mixer, names, actions } = useAnimations(animations)
 
-  const [update, setUpdate] = useState(0.01)
+  const [update, setUpdate] = useState(0.001)
 
   useFrame(() => {
-    //nodes.RotorAxis.rotation.y += 0.05
-
-    ref.current.rotation.y += 0.005
     mixer.update(update)
   })
-
-  console.log(nodes, ref)
+  const loader = new RGBELoader()
 
   useEffect(() => {
     animate()
+
+    loader.load('./AutoShop.hdr', (texture) => {
+      const envMap = pmremGenerator.fromEquirectangular(texture).texture
+
+      scene.environment = envMap
+      scene.background = envMap
+      // one can also set scene.background to envMap here
+
+      texture.dispose()
+      pmremGenerator.dispose()
+    })
   }, [animType])
   const animate = async () => {
+    const motorMaterial = materials.Ciniy
+    console.log(nodes)
+    console.log(nodes.CoverTop.material)
+    //nodes['podshibnik2_002'].material = motorMaterial
     for (let i in actions) {
       actions[i].reset()
       actions[i].stop()
     }
-
     actions[names[animType]].clampWhenFinished = true
     actions[names[animType]].repetitions = 1
     actions[names[animType]].reset().play()
-
-    await delay(1000)
-    setUpdate(-0.05)
-    actions[names[animType]].reset().play()
-    await delay(1000)
-    setUpdate(0.01)
+    // await delay(1000)
+    // setUpdate(-0.05)
+    // actions[names[animType]].reset().play()
+    // await delay(1000)
+    // setUpdate(0.01)
   }
-  return <primitive ref={ref} onClick={() => animate()} object={scene} />
-}
-
-const Lights = () => {
-  return (
-    <>
-      {/* Ambient Light illuminates lights for all objects */}
-      <ambientLight intensity={0.3} />
-      {/* Diretion light */}
-      <directionalLight position={[10, 10, 5]} intensity={1} />
-      <directionalLight
-        castShadow
-        position={[0, 10, 0]}
-        intensity={1.5}
-        shadow-mapSize-width={1024}
-        shadow-mapSize-height={1024}
-        shadow-camera-far={50}
-        shadow-camera-left={-10}
-        shadow-camera-right={10}
-        shadow-camera-top={10}
-        shadow-camera-bottom={-10}
-      />
-      {/* Spotlight Large overhead light */}
-      <spotLight intensity={1} position={[1000, 0, 0]} castShadow />
-    </>
-  )
+  // return <primitive ref={ref} onClick={() => animate()} object={scene} />
+  return <primitive ref={ref} onClick={animate} object={motor} />
 }
 
 const chair2 = ({ animType = 2 }) => {
   return (
-    <Canvas camera={{ position: [1, 1, 1], far: 1000 }}>
-      <Lights />
-      <Suspense fallback={null}>
-        <Asset animType={animType} url={'/Motor15.gltf'} />
-      </Suspense>
+    <Canvas
+      style={{ background: 'black' }}
+      camera={{ position: [1, 1, 1], far: 1000 }}
+    >
+      {/* <directionalLight /> */}
 
-      <Sky inclination={0.52} azimuth={0.3} />
+      <Suspense fallback={null}>
+        <Asset animType={animType} url={'/Motor.gltf'} />
+      </Suspense>
       <OrbitControls />
-      {/* <TrackballControls /> */}
     </Canvas>
   )
 }
