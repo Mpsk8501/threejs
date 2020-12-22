@@ -170,6 +170,8 @@ const returnSpeedRealValue = (value) => {
 
 export const Calculator = ({ tag_h1 = null, isActive = true, coeff }) => {
   const [animType, setAnimType] = useState(0)
+  const [animPower, setAnimPower] = useState(0)
+  const [animSpeed, setAnimSpeed] = useState(0)
 
   const [calcResult, setCalcResult] = useState(0)
   const [activeSlider, setActiveSlider] = useState(4)
@@ -182,6 +184,7 @@ export const Calculator = ({ tag_h1 = null, isActive = true, coeff }) => {
   }
 
   const speedClickHandler = (value) => {
+    setAnimSpeed(animSpeed + 1)
     setSliderValue(value)
   }
 
@@ -331,7 +334,7 @@ export const Calculator = ({ tag_h1 = null, isActive = true, coeff }) => {
                         filterActiveType === '0' ? classes.activeLi : ''
                       }
                       onMouseEnter={() => selectImageHandler('0')}
-                      onClick={() => selectFilterHandler('0', 2)}
+                      onClick={() => selectFilterHandler('0', 3)}
                     >
                       {returnOptionText('0')}
                     </li>
@@ -351,13 +354,19 @@ export const Calculator = ({ tag_h1 = null, isActive = true, coeff }) => {
           <div className={classes.main}>
             <div className={classes.sliderBlock}>
               <div className={classes.imgBlock}>
-                <Chair2 animType={animType} />
+                <Chair2
+                  animType={animType}
+                  animSpeed={animSpeed}
+                  animPower={animPower}
+                />
                 {/* <img src="/images/calculator/motor.png" alt="motor" /> */}
               </div>
               <div className={classes.slidersWrapper}>
                 <LeftSlider
                   setSlide={setActiveSlider}
                   activeSlide={activeSlider}
+                  animPower={animPower}
+                  setAnimPower={setAnimPower}
                 />
                 <div className={classes.rightSlider}>
                   <div className={classes.slider}>

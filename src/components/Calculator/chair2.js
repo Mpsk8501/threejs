@@ -16,65 +16,101 @@ const delay = (ms) =>
     }, ms)
   })
 
-const Asset = ({ url, animType }) => {
+const Asset = ({ url, animType, animPower, animSpeed }) => {
   const { gl, scene } = useThree()
   const pmremGenerator = new PMREMGenerator(gl)
   const { animations, scene: motor, nodes, materials } = useGLTF(url)
   const { ref, mixer, names, actions } = useAnimations(animations)
 
-  const [update, setUpdate] = useState(0.001)
+  const [needUpdate, setNeedUpdate] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+
+  const [side, setSide] = useState(-0.05)
+
+  console.log(motor)
+  console.log(nodes)
+  console.log(animations)
 
   useFrame(() => {
-    mixer.update(update)
+    mixer.update(side)
   })
   const loader = new RGBELoader()
 
   useEffect(() => {
-    animate()
-
     loader.load('./AutoShop.hdr', (texture) => {
       const envMap = pmremGenerator.fromEquirectangular(texture).texture
-
       scene.environment = envMap
-      scene.background = envMap
-      // one can also set scene.background to envMap here
-
+      //scene.background = envMap
       texture.dispose()
       pmremGenerator.dispose()
     })
-  }, [animType])
-  const animate = async () => {
-    const motorMaterial = materials.Ciniy
-    console.log(nodes)
-    console.log(nodes.CoverTop.material)
-    //nodes['podshibnik2_002'].material = motorMaterial
-    for (let i in actions) {
-      actions[i].reset()
-      actions[i].stop()
+    for (const action in actions) {
+      actions[action].clampWhenFinished = true
+      actions[action].repetitions = 1
     }
-    actions[names[animType]].clampWhenFinished = true
-    actions[names[animType]].repetitions = 1
-    actions[names[animType]].reset().play()
-    // await delay(1000)
-    // setUpdate(-0.05)
-    // actions[names[animType]].reset().play()
-    // await delay(1000)
-    // setUpdate(0.01)
+  }, [])
+  useEffect(() => {
+    motor.rotation.y = 2.4
+    motor.rotation.z = -0.2
+    motor.position.x = 0.3
+    animate()
+    setNeedUpdate(true)
+  }, [animType])
+  useEffect(() => {
+    if (needUpdate) {
+      animatePower()
+    }
+    setNeedUpdate(true)
+  }, [animPower])
+  useEffect(() => {
+    if (needUpdate) {
+      animateSpeed()
+    }
+    setNeedUpdate(true)
+  }, [animSpeed])
+  const animate = async () => {
+    if (animType === 3) {
+      await setSide(-0.05)
+      await actions[names[4]].reset().play()
+    }
+    if (animType === 0) {
+      setSide(-0.05)
+      actions['FullOpen'].reset().play()
+      setIsOpen(true)
+    }
+    if (animType === 1) {
+      setSide(0.05)
+      actions[names[4]].reset().play()
+    }
   }
-  // return <primitive ref={ref} onClick={() => animate()} object={scene} />
+  const animatePower = async () => {
+    setSide(-0.05)
+    actions['FullOpen'].reset().play()
+    setIsOpen(false)
+    actions['Shake'].reset().play()
+  }
+
+  const animateSpeed = async () => {
+    setSide(0.05)
+    actions[names[4]].reset().play()
+    await delay(800)
+    actions[names[0]].reset().play()
+    //actions['Rotate'].reset().play()
+  }
+
   return <primitive ref={ref} onClick={animate} object={motor} />
 }
 
-const chair2 = ({ animType = 2 }) => {
+const chair2 = ({ animType = 2, animPower, animSpeed }) => {
   return (
-    <Canvas
-      style={{ background: 'black' }}
-      camera={{ position: [1, 1, 1], far: 1000 }}
-    >
-      {/* <directionalLight /> */}
-
+    <Canvas camera={{ position: [0.4, 0.4, 0.4], far: 100 }}>
       <Suspense fallback={null}>
-        <Asset animType={animType} url={'/Motor.gltf'} />
+        <Asset
+          animSpeed={animSpeed}
+          animPower={animPower}
+          animType={animType}
+          url={'/Motor.gltf'}
+        />
       </Suspense>
       <OrbitControls />
     </Canvas>

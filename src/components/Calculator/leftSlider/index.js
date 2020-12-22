@@ -60,7 +60,12 @@ const returnPowerRealValue = (value) => {
   return powerValue
 }
 
-export const LeftSlider = ({ activeSlide, setSlide }) => {
+export const LeftSlider = ({
+  activeSlide,
+  setSlide,
+  animPower,
+  setAnimPower,
+}) => {
   const [leftSliderMargin, setLeftSliderMargin] = useState(-50)
   const [sliderClasses, setSliderClasses] = useState({
     [activeSlide + 1]: classes.preActive,
@@ -99,6 +104,7 @@ export const LeftSlider = ({ activeSlide, setSlide }) => {
         [newActiveSlider]: classes.active,
       })
       setSlide(newActiveSlider)
+      setAnimPower(animPower + 1)
     }
 
     setSlider()

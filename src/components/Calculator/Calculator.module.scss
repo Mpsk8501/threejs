@@ -173,9 +173,11 @@
       // background: url('/images/calculator/motor.png') center no-repeat;
       position: relative;
       .imgBlock {
-        width: 100vh;
-        height: 100vh;
-        z-index: 10;
+        //width: 100vh;
+        //height: 100vh;
+        height: 220px;
+        width: 100%;
+        z-index: 1;
         position: absolute;
         top: 0;
         //right: calc(50% - 180px);
@@ -191,6 +193,7 @@
         .rightSlider {
           //margin-top: 35px;
           transform: translateX(10px);
+          z-index: 2;
           position: absolute;
           width: 120px;
           padding-right: 10px;
