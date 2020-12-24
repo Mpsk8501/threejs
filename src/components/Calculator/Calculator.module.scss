@@ -175,11 +175,12 @@
       .imgBlock {
         //width: 100vh;
         //height: 100vh;
-        height: 220px;
+
+        height: 270px;
         width: 100%;
         z-index: 1;
         position: absolute;
-        top: 0;
+        top: -25px;
         //right: calc(50% - 180px);
       }
       .slidersWrapper {

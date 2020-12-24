@@ -1,11 +1,14 @@
-import React, { Suspense, useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState, useRef } from 'react'
 import { Canvas, useFrame, useThree } from 'react-three-fiber'
-import { UnsignedByteType, PMREMGenerator } from 'three'
+import { PMREMGenerator } from 'three'
+
 import {
   useGLTF,
-  useTexture,
   useAnimations,
   OrbitControls,
+  PerspectiveCamera,
+  ContactShadows,
+  softShadows,
 } from '@react-three/drei'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js'
 
@@ -18,23 +21,25 @@ const delay = (ms) =>
 
 const Asset = ({ url, animType, animPower, animSpeed }) => {
   const { gl, scene } = useThree()
+
   const pmremGenerator = new PMREMGenerator(gl)
   const { animations, scene: motor, nodes, materials } = useGLTF(url)
   const { ref, mixer, names, actions } = useAnimations(animations)
 
   const [needUpdate, setNeedUpdate] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
+  const [hasRotor, setHasRotor] = useState(true)
+  const [hasFasRotor, setHasFasRotor] = useState(false)
 
-  const [side, setSide] = useState(-0.05)
-
-  console.log(motor)
-  console.log(nodes)
-  console.log(animations)
+  const [side, setSide] = useState(0.05)
 
   useFrame(() => {
     mixer.update(side)
+    motor.rotation.y += 0.01
   })
   const loader = new RGBELoader()
+
+  console.log(animations)
 
   useEffect(() => {
     loader.load('./AutoShop.hdr', (texture) => {
@@ -48,62 +53,122 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
       actions[action].clampWhenFinished = true
       actions[action].repetitions = 1
     }
-  }, [])
-  useEffect(() => {
-    motor.rotation.y = 2.4
-    motor.rotation.z = -0.2
-    motor.position.x = 0.3
-    animate()
+
+    actions[names[2]].reset().play()
+    actions[names[1]].reset().play()
+    animateStart()
     setNeedUpdate(true)
+  }, [])
+
+  useEffect(() => {
+    if (needUpdate) {
+      animate()
+    }
   }, [animType])
   useEffect(() => {
     if (needUpdate) {
       animatePower()
     }
-    setNeedUpdate(true)
   }, [animPower])
   useEffect(() => {
     if (needUpdate) {
       animateSpeed()
     }
-    setNeedUpdate(true)
   }, [animSpeed])
+  const animateStart = async () => {
+    actions[names[0]].reset().play()
+    await delay(1700)
+    actions[names[0]].paused = true
+    setIsOpen(true)
+  }
+
   const animate = async () => {
-    if (animType === 3) {
-      await setSide(-0.05)
-      await actions[names[4]].reset().play()
+    if (animType === 0 && !isOpen) {
+      setSide(0.05)
+      animateStart()
     }
-    if (animType === 0) {
-      setSide(-0.05)
-      actions['FullOpen'].reset().play()
+    if (animType === 0 && isOpen) {
+      setSide(0.05)
+      actions[names[1]].reset().play()
+      setHasFasRotor(false)
+    }
+    if (animType === 1 && isOpen && hasRotor) {
+      setSide(0.05)
+      setHasRotor(false)
+
+      actions[names[0]].paused = false
+    }
+    if (animType === 1 && !isOpen) {
+      setSide(0.05)
+      actions[names[0]].reset().play()
+      setHasRotor(false)
       setIsOpen(true)
     }
-    if (animType === 1) {
-      setSide(0.05)
-      actions[names[4]].reset().play()
+    if (animType === 0 && isOpen && !hasRotor) {
+      setSide(-0.05)
+      actions[names[0]].reset().play()
+      await delay(1700)
+      actions[names[0]].paused = true
+      setHasRotor(true)
+    }
+    if (animType === 3 && isOpen) {
+      setSide(-0.05)
+      if (!hasRotor) {
+        actions[names[0]].reset().play()
+      } else {
+        actions[names[0]].paused = false
+      }
+
+      setHasRotor(true)
+      setIsOpen(false)
+    }
+    if (animType === 2 && isOpen && hasRotor && !hasFasRotor) {
+      setSide(-0.05)
+
+      actions[names[1]].reset().play()
+      setHasFasRotor(true)
+    }
+    if (animType === 2 && isOpen && !hasRotor) {
+      setSide(-0.05)
+      actions[names[0]].reset().play()
+      actions[names[1]].reset().play()
+      await delay(1700)
+      actions[names[0]].paused = true
+      setHasRotor(true)
+      setHasFasRotor(true)
     }
   }
   const animatePower = async () => {
-    setSide(-0.05)
-    actions['FullOpen'].reset().play()
-    setIsOpen(false)
-    actions['Shake'].reset().play()
+    actions[names[3]].reset().play()
   }
 
   const animateSpeed = async () => {
-    setSide(0.05)
-    actions[names[4]].reset().play()
-    await delay(800)
-    actions[names[0]].reset().play()
-    //actions['Rotate'].reset().play()
+    actions[names[2]].reset().play()
   }
 
-  return <primitive ref={ref} onClick={animate} object={motor} />
-}
+  const cameRArEF = useRef()
 
+  useEffect(() => {
+    //cameRArEF.current.position.set(1, 1, 2)
+    cameRArEF.current.lookAt(1, 1, 1)
+    console.log(cameRArEF.current)
+  }, [])
+  return (
+    <PerspectiveCamera ref={cameRArEF}>
+      <primitive
+        castShadow
+        receiveShadow
+        ref={ref}
+        onClick={animate}
+        object={motor}
+      />
+    </PerspectiveCamera>
+  )
+}
+softShadows()
 const chair2 = ({ animType = 2, animPower, animSpeed }) => {
   return (
-    <Canvas camera={{ position: [0.4, 0.4, 0.4], far: 100 }}>
+    <Canvas shadowMap camera={{ position: [0.9, 0.9, 0.9], fov: 25 }}>
       <Suspense fallback={null}>
         <Asset
           animSpeed={animSpeed}
