@@ -177,5 +177,10 @@ a {
   //   }
   // }
 }
+.lss {
+  canvas {
+    height: 400px !important;
+  }
+}
 
 @import './ui';

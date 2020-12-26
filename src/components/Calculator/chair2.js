@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useState, useRef } from 'react'
 import { Canvas, useFrame, useThree } from 'react-three-fiber'
-import { PMREMGenerator } from 'three'
+import { PMREMGenerator, Mesh, LightShadow } from 'three'
 
 import {
   useGLTF,
@@ -9,6 +9,11 @@ import {
   PerspectiveCamera,
   ContactShadows,
   softShadows,
+  Plane,
+  Sphere,
+  Box,
+  Environment,
+  Sky,
 } from '@react-three/drei'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js'
 
@@ -33,13 +38,31 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
 
   const [side, setSide] = useState(0.05)
 
+  const [rise, setRise] = useState(true)
+
+  const sphereRef = useRef()
+  console.log(sphereRef)
+
+  const spherePosition = (coord) => {
+    if (rise) {
+      if (coord > 2) {
+        setRise(false)
+      }
+      return coord + 0.005
+    } else {
+      if (coord < 0) {
+        setRise(true)
+      }
+      return coord - 0.005
+    }
+  }
+
   useFrame(() => {
     mixer.update(side)
-    motor.rotation.y += 0.01
+    motor.rotation.y += 0.005
+    motor.position.x = spherePosition(motor.position.x)
   })
   const loader = new RGBELoader()
-
-  console.log(animations)
 
   useEffect(() => {
     loader.load('./AutoShop.hdr', (texture) => {
@@ -49,9 +72,14 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
       texture.dispose()
       pmremGenerator.dispose()
     })
+    cameRArEF.current.lookAt(1, 1, 1)
     for (const action in actions) {
       actions[action].clampWhenFinished = true
       actions[action].repetitions = 1
+    }
+    for (const node in nodes) {
+      nodes[node].castShadow = true
+      nodes[node].receiveShadow = true
     }
 
     actions[names[2]].reset().play()
@@ -65,16 +93,19 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
       animate()
     }
   }, [animType])
+
   useEffect(() => {
     if (needUpdate) {
       animatePower()
     }
   }, [animPower])
+
   useEffect(() => {
     if (needUpdate) {
       animateSpeed()
     }
   }, [animSpeed])
+
   const animateStart = async () => {
     actions[names[0]].reset().play()
     await delay(1700)
@@ -128,6 +159,10 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
       actions[names[1]].reset().play()
       setHasFasRotor(true)
     }
+    if (animType === 2 && !isOpen) {
+      setSide(0.05)
+      animateStart()
+    }
     if (animType === 2 && isOpen && !hasRotor) {
       setSide(-0.05)
       actions[names[0]].reset().play()
@@ -138,6 +173,7 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
       setHasFasRotor(true)
     }
   }
+
   const animatePower = async () => {
     actions[names[3]].reset().play()
   }
@@ -148,27 +184,94 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
 
   const cameRArEF = useRef()
 
-  useEffect(() => {
-    //cameRArEF.current.position.set(1, 1, 2)
-    cameRArEF.current.lookAt(1, 1, 1)
-    console.log(cameRArEF.current)
-  }, [])
   return (
     <PerspectiveCamera ref={cameRArEF}>
       <primitive
-        castShadow
         receiveShadow
+        castShadow
         ref={ref}
         onClick={animate}
         object={motor}
       />
+      <SphereNew />
+      <LightModule />
     </PerspectiveCamera>
   )
 }
+
+const LightModule = () => {
+  const lightRef = useRef()
+
+  console.log(lightRef)
+  useFrame(() => {})
+
+  return (
+    <spotLight
+      ref={lightRef}
+      shadow-mapSize-width={1024}
+      shadow-mapSize-height={1024}
+      shadow-camera-far={50}
+      shadow-camera-left={-10}
+      shadow-camera-right={10}
+      shadow-camera-top={10}
+      shadow-camera-bottom={-10}
+      castShadow
+    />
+  )
+}
+
+const SphereNew = () => {
+  const [rise, setRise] = useState(true)
+
+  const sphereRef = useRef()
+  console.log(sphereRef)
+
+  const spherePosition = (coord) => {
+    if (rise) {
+      if (coord > 2) {
+        setRise(false)
+      }
+      return coord + 0.005
+    } else {
+      if (coord < 0) {
+        setRise(true)
+      }
+      return coord - 0.005
+    }
+  }
+
+  useFrame(() => {
+    sphereRef.current.position.x = spherePosition(sphereRef.current.position.x)
+    sphereRef.current.scale.x = spherePosition(sphereRef.current.position.x)
+    sphereRef.current.scale.y = spherePosition(sphereRef.current.position.x)
+    sphereRef.current.scale.z = spherePosition(sphereRef.current.position.x)
+  })
+
+  return (
+    <mesh
+      ref={sphereRef}
+      visible
+      receiveShadow
+      castShadow
+      position={[-1, -1, 1]}
+      rotation={[Math.PI / 2, 0, 0]}
+    >
+      <sphereGeometry args={[1, 16, 16]} />
+      <meshStandardMaterial color="hotpink" transparent />
+    </mesh>
+  )
+}
+
 softShadows()
+
 const chair2 = ({ animType = 2, animPower, animSpeed }) => {
   return (
-    <Canvas shadowMap camera={{ position: [0.9, 0.9, 0.9], fov: 25 }}>
+    <Canvas
+      colorManagement
+      shadowMap
+      camera={{ position: [1.5, 1.5, 1.5], fov: 25 }}
+    >
+      <OrbitControls />
       <Suspense fallback={null}>
         <Asset
           animSpeed={animSpeed}
@@ -177,7 +280,6 @@ const chair2 = ({ animType = 2, animPower, animSpeed }) => {
           url={'/Motor.gltf'}
         />
       </Suspense>
-      <OrbitControls />
     </Canvas>
   )
 }
