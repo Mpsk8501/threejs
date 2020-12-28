@@ -1,20 +1,16 @@
 import React, { Suspense, useEffect, useState, useRef } from 'react'
 import { Canvas, useFrame, useThree } from 'react-three-fiber'
-import { PMREMGenerator, Mesh, LightShadow } from 'three'
+import { PMREMGenerator } from 'three'
 
 import {
   useGLTF,
   useAnimations,
   OrbitControls,
   PerspectiveCamera,
-  ContactShadows,
-  softShadows,
-  Sphere,
-  Box,
-  Environment,
-  Sky,
+
 } from '@react-three/drei'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js'
+import Effect from './effects'
 
 const delay = (ms) =>
   new Promise((resolve) => {
@@ -38,7 +34,7 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
 
   useFrame(() => {
     mixer.update(side)
-    motor.rotation.y += 0.005
+    //motor.rotation.y += 0.005
   })
   const loader = new RGBELoader()
 
@@ -57,7 +53,7 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
     }
     for (const node in nodes) {
       nodes[node].castShadow = true
-      nodes[node].receiveShadow = true
+      //nodes[node].receiveShadow = true
     }
 
     actions[names[2]].reset().play()
@@ -226,21 +222,21 @@ const LightModule = () => {
   const [posLight, setPosLight] = useState([0, 0])
 
   useFrame(() => {
-    lightRef2.current.position.x = lightPos(lightRef2.current.position.x)
+    lightRef.current.position.x = lightPos(lightRef.current.position.x)
 
-    lightRef.current.position.x = posLight[0] / 697
-    lightRef.current.position.y = posLight[1] / 252
+    // lightRef.current.position.x = posLight[0] / 697
+    //lightRef.current.position.y = posLight[1] / 252
   })
 
-  useEffect(() => {
-    const canvas = document.querySelector('canvas')
-    const listener = canvas.addEventListener('mousemove', (e) => {
-      setPosLight([e.offsetX, e.offsetY])
-    })
-    return () => {
-      canvas.removeEventListener('mousemove', listener)
-    }
-  }, [])
+  // useEffect(() => {
+  //   const canvas = document.querySelector('canvas')
+  //   const listener = canvas.addEventListener('mousemove', (e) => {
+  //     setPosLight([e.offsetX, e.offsetY])
+  //   })
+  //   return () => {
+  //     canvas.removeEventListener('mousemove', listener)
+  //   }
+  // }, [])
 
   return (
     <>
@@ -255,7 +251,7 @@ const LightModule = () => {
         shadow-camera-top={10}
         shadow-camera-bottom={-10}
       />
-      <spotLight
+      {/* <spotLight
         ref={lightRef2}
         shadow-mapSize-width={1024}
         shadow-mapSize-height={1024}
@@ -266,7 +262,7 @@ const LightModule = () => {
         shadow-camera-bottom={-10}
         castShadow
       />
-      <directionalLight castShadow />
+      <directionalLight castShadow /> */}
     </>
   )
 }
@@ -316,22 +312,48 @@ const SphereNew = () => {
 //softShadows()
 
 function Plane({ ...props }) {
+  const ref = useRef()
+
+  const changeAngle = async () => {
+    await delay(1000)
+    ref.current.minPolarAngle = 1.45
+  }
+
+  useEffect(() => {
+    console.log(ref)
+    ref.current.minPolarAngle = 1.55
+    changeAngle()
+  }, [])
   return (
-    <mesh {...props} receiveShadow>
-      <planeBufferGeometry args={[500, 500, 1, 1]} />
-      <shadowMaterial transparent opacity={0.2} />
-    </mesh>
+    <group>
+      <OrbitControls
+        //minPolarAngle={1.4}
+        maxPolarAngle={1.63}
+        minDistance={1}
+        maxDistance={3}
+        ref={ref}
+        autoRotate
+      />
+      <mesh colorManagement {...props} receiveShadow>
+        <meshBasicMaterial
+          transparent
+          opacity={0.2}
+          colorManagement
+          color={'grey'}
+        />
+        <planeBufferGeometry args={[500, 500, 1, 1]} />
+      </mesh>
+      <mesh colorManagement {...props} receiveShadow>
+        <planeBufferGeometry args={[500, 500, 1, 1]} />
+        <shadowMaterial transparent opacity={0.2} />
+      </mesh>
+    </group>
   )
 }
 
 const chair2 = ({ animType = 2, animPower, animSpeed }) => {
   return (
-    <Canvas
-      colorManagement
-      shadowMap
-      camera={{ position: [1.5, 1.5, 1.5], fov: 25 }}
-    >
-      <OrbitControls />
+    <Canvas colorManagement shadowMap camera={{ position: [1, 1, 1], fov: 25 }}>
       <Suspense fallback={null}>
         <Asset
           animSpeed={animSpeed}
@@ -341,7 +363,9 @@ const chair2 = ({ animType = 2, animPower, animSpeed }) => {
         />
       </Suspense>
 
-      <Plane rotation={[-0.5 * Math.PI, 0, 0]} position={[0, -0.2, 0]} />
+      <Effect/>
+
+      <Plane rotation={[-0.5 * Math.PI, 0, 0]} position={[0, -0.18, 0]} />
     </Canvas>
   )
 }
