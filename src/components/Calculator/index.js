@@ -5,7 +5,6 @@ import classes from './Calculator.module.scss'
 
 import Slider from '@material-ui/core/Slider'
 import { LeftSlider } from './leftSlider'
-import NewScene from './newScene.js'
 
 let baseValueSplitter3000 = {
   1: 2116.47,
@@ -461,7 +460,6 @@ export const Calculator = ({ tag_h1 = null, isActive = true, coeff }) => {
           </div>
         </div>
       </div>
-      <NewScene />
     </>
   )
 }

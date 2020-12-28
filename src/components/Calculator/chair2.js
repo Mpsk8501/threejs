@@ -9,7 +9,6 @@ import {
   PerspectiveCamera,
   ContactShadows,
   softShadows,
-  Plane,
   Sphere,
   Box,
   Environment,
@@ -34,33 +33,12 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
   const [needUpdate, setNeedUpdate] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [hasRotor, setHasRotor] = useState(true)
-  const [hasFasRotor, setHasFasRotor] = useState(false)
 
   const [side, setSide] = useState(0.05)
-
-  const [rise, setRise] = useState(true)
-
-  const sphereRef = useRef()
-  console.log(sphereRef)
-
-  const spherePosition = (coord) => {
-    if (rise) {
-      if (coord > 2) {
-        setRise(false)
-      }
-      return coord + 0.005
-    } else {
-      if (coord < 0) {
-        setRise(true)
-      }
-      return coord - 0.005
-    }
-  }
 
   useFrame(() => {
     mixer.update(side)
     motor.rotation.y += 0.005
-    motor.position.x = spherePosition(motor.position.x)
   })
   const loader = new RGBELoader()
 
@@ -72,7 +50,7 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
       texture.dispose()
       pmremGenerator.dispose()
     })
-    cameRArEF.current.lookAt(1, 1, 1)
+    //cameRArEF.current.lookAt(1, 1, 1)
     for (const action in actions) {
       actions[action].clampWhenFinished = true
       actions[action].repetitions = 1
@@ -113,64 +91,90 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
     setIsOpen(true)
   }
 
-  const animate = async () => {
-    if (animType === 0 && !isOpen) {
+  const animateType0 = async () => {
+    if (isOpen) {
+      if (!hasRotor) {
+        setSide(-0.05)
+        actions[names[0]].reset().play()
+        await delay(1700)
+        actions[names[0]].paused = true
+        setHasRotor(true)
+      } else {
+        setSide(0.05)
+        actions[names[1]].reset().play()
+      }
+    } else {
       setSide(0.05)
       animateStart()
     }
-    if (animType === 0 && isOpen) {
-      setSide(0.05)
+  }
+  const animateType1 = async () => {
+    if (isOpen) {
       actions[names[1]].reset().play()
-      setHasFasRotor(false)
-    }
-    if (animType === 1 && isOpen && hasRotor) {
-      setSide(0.05)
-      setHasRotor(false)
 
-      actions[names[0]].paused = false
-    }
-    if (animType === 1 && !isOpen) {
+      if (!hasRotor) {
+        return
+      } else {
+        setSide(0.05)
+        setHasRotor(false)
+
+        actions[names[0]].paused = false
+      }
+    } else {
       setSide(0.05)
       actions[names[0]].reset().play()
       setHasRotor(false)
       setIsOpen(true)
     }
-    if (animType === 0 && isOpen && !hasRotor) {
-      setSide(-0.05)
-      actions[names[0]].reset().play()
-      await delay(1700)
-      actions[names[0]].paused = true
-      setHasRotor(true)
+  }
+  const animateType2 = async () => {
+    if (isOpen) {
+      if (!hasRotor) {
+        setSide(-0.05)
+        actions[names[0]].reset().play()
+        actions[names[1]].reset().play()
+        await delay(1700)
+        actions[names[0]].paused = true
+        setHasRotor(true)
+      } else {
+        setSide(-0.05)
+        actions[names[1]].reset().play()
+      }
+    } else {
+      setSide(0.05)
+      animateStart()
     }
-    if (animType === 3 && isOpen) {
+  }
+  const animateType3 = async () => {
+    if (isOpen) {
       setSide(-0.05)
       if (!hasRotor) {
         actions[names[0]].reset().play()
       } else {
         actions[names[0]].paused = false
+        await delay(3200)
+        actions[names[0]].paused = true
       }
-
       setHasRotor(true)
       setIsOpen(false)
+    } else {
+      return
     }
-    if (animType === 2 && isOpen && hasRotor && !hasFasRotor) {
-      setSide(-0.05)
+  }
 
-      actions[names[1]].reset().play()
-      setHasFasRotor(true)
+  const animate = async () => {
+    if (animType === 0) {
+      animateType0()
     }
-    if (animType === 2 && !isOpen) {
-      setSide(0.05)
-      animateStart()
+    if (animType === 1) {
+      animateType1()
     }
-    if (animType === 2 && isOpen && !hasRotor) {
-      setSide(-0.05)
-      actions[names[0]].reset().play()
-      actions[names[1]].reset().play()
-      await delay(1700)
-      actions[names[0]].paused = true
-      setHasRotor(true)
-      setHasFasRotor(true)
+
+    if (animType === 2) {
+      animateType2()
+    }
+    if (animType === 3) {
+      animateType3()
     }
   }
 
@@ -193,7 +197,7 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
         onClick={animate}
         object={motor}
       />
-      <SphereNew />
+      {/* <SphereNew /> */}
       <LightModule />
     </PerspectiveCamera>
   )
@@ -201,22 +205,69 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
 
 const LightModule = () => {
   const lightRef = useRef()
+  const lightRef2 = useRef()
 
-  console.log(lightRef)
-  useFrame(() => {})
+  const [rise, setRise] = useState(true)
+
+  const lightPos = (pos) => {
+    if (rise) {
+      if (pos > 2) {
+        setRise(false)
+      }
+      return pos + 0.04
+    } else {
+      if (pos < -2) {
+        setRise(true)
+      }
+      return pos - 0.04
+    }
+  }
+
+  const [posLight, setPosLight] = useState([0, 0])
+
+  useFrame(() => {
+    lightRef2.current.position.x = lightPos(lightRef2.current.position.x)
+
+    lightRef.current.position.x = posLight[0] / 697
+    lightRef.current.position.y = posLight[1] / 252
+  })
+
+  useEffect(() => {
+    const canvas = document.querySelector('canvas')
+    const listener = canvas.addEventListener('mousemove', (e) => {
+      setPosLight([e.offsetX, e.offsetY])
+    })
+    return () => {
+      canvas.removeEventListener('mousemove', listener)
+    }
+  }, [])
 
   return (
-    <spotLight
-      ref={lightRef}
-      shadow-mapSize-width={1024}
-      shadow-mapSize-height={1024}
-      shadow-camera-far={50}
-      shadow-camera-left={-10}
-      shadow-camera-right={10}
-      shadow-camera-top={10}
-      shadow-camera-bottom={-10}
-      castShadow
-    />
+    <>
+      <spotLight
+        ref={lightRef}
+        castShadow
+        shadow-mapSize-width={1024}
+        shadow-mapSize-height={1024}
+        shadow-camera-far={50}
+        shadow-camera-left={-10}
+        shadow-camera-right={10}
+        shadow-camera-top={10}
+        shadow-camera-bottom={-10}
+      />
+      <spotLight
+        ref={lightRef2}
+        shadow-mapSize-width={1024}
+        shadow-mapSize-height={1024}
+        shadow-camera-far={50}
+        shadow-camera-left={-10}
+        shadow-camera-right={10}
+        shadow-camera-top={10}
+        shadow-camera-bottom={-10}
+        castShadow
+      />
+      <directionalLight castShadow />
+    </>
   )
 }
 
@@ -262,7 +313,16 @@ const SphereNew = () => {
   )
 }
 
-softShadows()
+//softShadows()
+
+function Plane({ ...props }) {
+  return (
+    <mesh {...props} receiveShadow>
+      <planeBufferGeometry args={[500, 500, 1, 1]} />
+      <shadowMaterial transparent opacity={0.2} />
+    </mesh>
+  )
+}
 
 const chair2 = ({ animType = 2, animPower, animSpeed }) => {
   return (
@@ -280,6 +340,8 @@ const chair2 = ({ animType = 2, animPower, animSpeed }) => {
           url={'/Motor.gltf'}
         />
       </Suspense>
+
+      <Plane rotation={[-0.5 * Math.PI, 0, 0]} position={[0, -0.2, 0]} />
     </Canvas>
   )
 }
