@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "4.11.2",
     "@react-spring/three": "^9.0.0-rc.3",
+    "@react-spring/web": "^9.0.0-rc.3",
     "@react-three/drei": "^2.2.12",
     "node-sass": "^4.9",
     "react": "^17.0.1",

@@ -7,8 +7,11 @@ import {
   useAnimations,
   OrbitControls,
   PerspectiveCamera,
+  useProgress,
 } from '@react-three/drei'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js'
+
+import { a, useTransition } from '@react-spring/web'
 
 const delay = (ms) =>
   new Promise((resolve) => {
@@ -85,8 +88,6 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
     setSide(0.05)
     mixer.stopAllAction()
     actions[names[0]].reset().play()
-    await delay(1500)
-    actions[names[6]].reset().play()
     setIsOpen(true)
   }
 
@@ -113,7 +114,6 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
     } else {
       actions[names[0]].reset().play()
       const listener = () => {
-        actions[names[6]].reset().play()
         actions[names[5]].reset().play()
         mixer.removeEventListener('finished', listener)
       }
@@ -144,13 +144,12 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
     if (isOpen) {
       if (hasRotor) {
         actions[names[0]].reset().play()
-        actions[names[6]].reset().play()
       } else {
         actions[names[5]].reset().play()
 
         const listener = async () => {
           actions[names[0]].reset().play()
-          actions[names[6]].reset().play()
+
           mixer.removeEventListener('finished', listener)
         }
         mixer.addEventListener('finished', listener)
@@ -180,6 +179,7 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
 
   const animatePower = async () => {
     actions[names[3]].reset().play()
+    actions[names[4]].reset().play()
   }
 
   const animateSpeed = async () => {
@@ -251,26 +251,49 @@ function Plane({ ...props }) {
   )
 }
 
+function Loader() {
+  const { active, progress } = useProgress()
+  const transition = useTransition(active, {
+    from: { opacity: 1, progress: 0 },
+    leave: { opacity: 0 },
+    update: { progress },
+  })
+  return transition(
+    ({ progress, opacity }, active) =>
+      active && (
+        <a.div className="loading" style={{ opacity }}>
+          <div className="loading-bar-container">
+            <a.div className="loading-bar" style={{ width: progress }}></a.div>
+          </div>
+        </a.div>
+      )
+  )
+}
+
 const chair2 = ({ animType = 2, animPower, animSpeed }) => {
   return (
-    <Canvas
-      colorManagement
-      shadowMap
-      camera={{ position: [1, 1, 1], fov: 25, far: 10 }}
-    >
-      <Suspense fallback={null}>
-        <Asset
-          animSpeed={animSpeed}
-          animPower={animPower}
-          animType={animType}
-          url={'/MOTOP.gltf'}
-        />
-      </Suspense>
+    <>
+      <Canvas
+        style={{ background: 'grey' }}
+        colorManagement
+        shadowMap
+        camera={{ position: [1, 1, 1], fov: 25, far: 10 }}
+      >
+        <Suspense fallback={null}>
+          <Asset
+            animSpeed={animSpeed}
+            animPower={animPower}
+            animType={animType}
+            url={'/MOTOP.gltf'}
+          />
+        </Suspense>
 
-      {/* <Effect/> */}
+        {/* <Effect/> */}
 
-      <Plane rotation={[-0.5 * Math.PI, 0, 0]} position={[0, -0.18, 0]} />
-    </Canvas>
+        <Plane rotation={[-0.5 * Math.PI, 0, 0]} position={[0, -0.18, 0]} />
+      </Canvas>
+      <Loader />
+    </>
   )
 }
 
