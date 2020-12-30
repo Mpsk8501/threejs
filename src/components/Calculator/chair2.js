@@ -7,10 +7,8 @@ import {
   useAnimations,
   OrbitControls,
   PerspectiveCamera,
-
 } from '@react-three/drei'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js'
-import Effect from './effects'
 
 const delay = (ms) =>
   new Promise((resolve) => {
@@ -32,8 +30,11 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
 
   const [side, setSide] = useState(0.05)
 
+  console.log(nodes)
+
   useFrame(() => {
     mixer.update(side)
+    nodes['Rotor'].rotation.z += 0.01
     //motor.rotation.y += 0.005
   })
   const loader = new RGBELoader()
@@ -46,7 +47,7 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
       texture.dispose()
       pmremGenerator.dispose()
     })
-    //cameRArEF.current.lookAt(1, 1, 1)
+
     for (const action in actions) {
       actions[action].clampWhenFinished = true
       actions[action].repetitions = 1
@@ -57,7 +58,7 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
     }
 
     actions[names[2]].reset().play()
-    actions[names[1]].reset().play()
+
     animateStart()
     setNeedUpdate(true)
   }, [])
@@ -81,23 +82,24 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
   }, [animSpeed])
 
   const animateStart = async () => {
+    setSide(0.05)
+    mixer.stopAllAction()
     actions[names[0]].reset().play()
-    await delay(1700)
-    actions[names[0]].paused = true
+    await delay(1500)
+    actions[names[6]].reset().play()
     setIsOpen(true)
   }
 
   const animateType0 = async () => {
+    nodes['ElectricMotor_0362'].scale.x = 0
+    nodes['ElectricMotor_0362'].scale.y = 0
+    nodes['ElectricMotor_0362'].scale.z = 0
+
     if (isOpen) {
+      setSide(-0.05)
       if (!hasRotor) {
-        setSide(-0.05)
-        actions[names[0]].reset().play()
-        await delay(1700)
-        actions[names[0]].paused = true
+        actions[names[5]].reset().play()
         setHasRotor(true)
-      } else {
-        setSide(0.05)
-        actions[names[1]].reset().play()
       }
     } else {
       setSide(0.05)
@@ -105,57 +107,59 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
     }
   }
   const animateType1 = async () => {
-    if (isOpen) {
-      actions[names[1]].reset().play()
-
-      if (!hasRotor) {
-        return
-      } else {
-        setSide(0.05)
-        setHasRotor(false)
-
-        actions[names[0]].paused = false
-      }
+    setSide(0.05)
+    if (isOpen && hasRotor) {
+      actions[names[5]].reset().play()
     } else {
-      setSide(0.05)
       actions[names[0]].reset().play()
-      setHasRotor(false)
-      setIsOpen(true)
+      const listener = () => {
+        actions[names[6]].reset().play()
+        actions[names[5]].reset().play()
+        mixer.removeEventListener('finished', listener)
+      }
+      mixer.addEventListener('finished', listener)
     }
+    setIsOpen(true)
+    setHasRotor(false)
   }
+
   const animateType2 = async () => {
+    nodes['ElectricMotor_0362'].scale.x = 1
+    nodes['ElectricMotor_0362'].scale.y = 1
+    nodes['ElectricMotor_0362'].scale.z = 1
     if (isOpen) {
       if (!hasRotor) {
-        setSide(-0.05)
-        actions[names[0]].reset().play()
-        actions[names[1]].reset().play()
-        await delay(1700)
-        actions[names[0]].paused = true
-        setHasRotor(true)
-      } else {
-        setSide(-0.05)
-        actions[names[1]].reset().play()
+        animateType0()
+        nodes['ElectricMotor_0362'].scale.x = 1
+        nodes['ElectricMotor_0362'].scale.y = 1
+        nodes['ElectricMotor_0362'].scale.z = 1
       }
     } else {
-      setSide(0.05)
       animateStart()
     }
   }
   const animateType3 = async () => {
+    setSide(-0.05)
+
     if (isOpen) {
-      setSide(-0.05)
-      if (!hasRotor) {
+      if (hasRotor) {
         actions[names[0]].reset().play()
+        actions[names[6]].reset().play()
       } else {
-        actions[names[0]].paused = false
-        await delay(3200)
-        actions[names[0]].paused = true
+        actions[names[5]].reset().play()
+
+        const listener = async () => {
+          actions[names[0]].reset().play()
+          actions[names[6]].reset().play()
+          mixer.removeEventListener('finished', listener)
+        }
+        mixer.addEventListener('finished', listener)
       }
-      setHasRotor(true)
-      setIsOpen(false)
     } else {
       return
     }
+    setIsOpen(false)
+    setHasRotor(true)
   }
 
   const animate = async () => {
@@ -190,126 +194,31 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
         receiveShadow
         castShadow
         ref={ref}
-        onClick={animate}
+        //onClick={animate}
         object={motor}
       />
-      {/* <SphereNew /> */}
       <LightModule />
     </PerspectiveCamera>
   )
 }
 
 const LightModule = () => {
-  const lightRef = useRef()
-  const lightRef2 = useRef()
-
-  const [rise, setRise] = useState(true)
-
-  const lightPos = (pos) => {
-    if (rise) {
-      if (pos > 2) {
-        setRise(false)
-      }
-      return pos + 0.04
-    } else {
-      if (pos < -2) {
-        setRise(true)
-      }
-      return pos - 0.04
-    }
-  }
-
-  const [posLight, setPosLight] = useState([0, 0])
-
-  useFrame(() => {
-    lightRef.current.position.x = lightPos(lightRef.current.position.x)
-
-    // lightRef.current.position.x = posLight[0] / 697
-    //lightRef.current.position.y = posLight[1] / 252
-  })
-
-  // useEffect(() => {
-  //   const canvas = document.querySelector('canvas')
-  //   const listener = canvas.addEventListener('mousemove', (e) => {
-  //     setPosLight([e.offsetX, e.offsetY])
-  //   })
-  //   return () => {
-  //     canvas.removeEventListener('mousemove', listener)
-  //   }
-  // }, [])
-
   return (
     <>
       <spotLight
-        ref={lightRef}
+        position={[1, 5, 1]}
         castShadow
-        shadow-mapSize-width={1024}
-        shadow-mapSize-height={1024}
+        //shadow-mapSize-width={256}
+        //shadow-mapSize-height={256}
         shadow-camera-far={50}
         shadow-camera-left={-10}
         shadow-camera-right={10}
         shadow-camera-top={10}
         shadow-camera-bottom={-10}
       />
-      {/* <spotLight
-        ref={lightRef2}
-        shadow-mapSize-width={1024}
-        shadow-mapSize-height={1024}
-        shadow-camera-far={50}
-        shadow-camera-left={-10}
-        shadow-camera-right={10}
-        shadow-camera-top={10}
-        shadow-camera-bottom={-10}
-        castShadow
-      />
-      <directionalLight castShadow /> */}
     </>
   )
 }
-
-const SphereNew = () => {
-  const [rise, setRise] = useState(true)
-
-  const sphereRef = useRef()
-  console.log(sphereRef)
-
-  const spherePosition = (coord) => {
-    if (rise) {
-      if (coord > 2) {
-        setRise(false)
-      }
-      return coord + 0.005
-    } else {
-      if (coord < 0) {
-        setRise(true)
-      }
-      return coord - 0.005
-    }
-  }
-
-  useFrame(() => {
-    sphereRef.current.position.x = spherePosition(sphereRef.current.position.x)
-    sphereRef.current.scale.x = spherePosition(sphereRef.current.position.x)
-    sphereRef.current.scale.y = spherePosition(sphereRef.current.position.x)
-    sphereRef.current.scale.z = spherePosition(sphereRef.current.position.x)
-  })
-
-  return (
-    <mesh
-      ref={sphereRef}
-      visible
-      receiveShadow
-      castShadow
-      position={[-1, -1, 1]}
-      rotation={[Math.PI / 2, 0, 0]}
-    >
-      <sphereGeometry args={[1, 16, 16]} />
-      <meshStandardMaterial color="hotpink" transparent />
-    </mesh>
-  )
-}
-
-//softShadows()
 
 function Plane({ ...props }) {
   const ref = useRef()
@@ -320,32 +229,23 @@ function Plane({ ...props }) {
   }
 
   useEffect(() => {
-    console.log(ref)
     ref.current.minPolarAngle = 1.55
     changeAngle()
   }, [])
   return (
     <group>
       <OrbitControls
-        //minPolarAngle={1.4}
+        minPolarAngle={1.4}
         maxPolarAngle={1.63}
         minDistance={1}
         maxDistance={3}
         ref={ref}
         autoRotate
       />
-      <mesh colorManagement {...props} receiveShadow>
-        <meshBasicMaterial
-          transparent
-          opacity={0.2}
-          colorManagement
-          color={'grey'}
-        />
-        <planeBufferGeometry args={[500, 500, 1, 1]} />
-      </mesh>
+
       <mesh colorManagement {...props} receiveShadow>
         <planeBufferGeometry args={[500, 500, 1, 1]} />
-        <shadowMaterial transparent opacity={0.2} />
+        <shadowMaterial transparent opacity={0.3} />
       </mesh>
     </group>
   )
@@ -353,17 +253,21 @@ function Plane({ ...props }) {
 
 const chair2 = ({ animType = 2, animPower, animSpeed }) => {
   return (
-    <Canvas colorManagement shadowMap camera={{ position: [1, 1, 1], fov: 25 }}>
+    <Canvas
+      colorManagement
+      shadowMap
+      camera={{ position: [1, 1, 1], fov: 25, far: 10 }}
+    >
       <Suspense fallback={null}>
         <Asset
           animSpeed={animSpeed}
           animPower={animPower}
           animType={animType}
-          url={'/Motor.gltf'}
+          url={'/MOTOP.gltf'}
         />
       </Suspense>
 
-      <Effect/>
+      {/* <Effect/> */}
 
       <Plane rotation={[-0.5 * Math.PI, 0, 0]} position={[0, -0.18, 0]} />
     </Canvas>
