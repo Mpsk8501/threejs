@@ -1,7 +1,8 @@
 import React, { Suspense, useEffect, useState, useRef } from 'react'
 import { Canvas, useFrame, useThree } from 'react-three-fiber'
 import { PMREMGenerator } from 'three'
-
+import CircularProgress from '@material-ui/core/CircularProgress'
+import classes from './chair.module.scss'
 import {
   useGLTF,
   useAnimations,
@@ -10,8 +11,6 @@ import {
   useProgress,
 } from '@react-three/drei'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js'
-
-import { a, useTransition } from '@react-spring/web'
 
 const delay = (ms) =>
   new Promise((resolve) => {
@@ -33,11 +32,16 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
 
   const [side, setSide] = useState(0.05)
 
-  console.log(nodes)
+  const [rotation, setRotation] = useState(false)
+
+  //console.log(nodes)
 
   useFrame(() => {
     mixer.update(side)
-    nodes['Rotor'].rotation.z += 0.01
+    if (rotation) {
+      nodes['Rotor'].rotation.z += 0.1
+    }
+
     //motor.rotation.y += 0.005
   })
   const loader = new RGBELoader()
@@ -56,7 +60,10 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
       actions[action].repetitions = 1
     }
     for (const node in nodes) {
-      nodes[node].castShadow = true
+      if (!node.includes('Light')) {
+        nodes[node].castShadow = true
+      }
+
       //nodes[node].receiveShadow = true
     }
 
@@ -85,7 +92,9 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
   }, [animSpeed])
 
   const animateStart = async () => {
-    setSide(0.05)
+    //setSide(0.05)
+    actions[names[5]].timeScale = 1
+    actions[names[0]].timeScale = 1
     mixer.stopAllAction()
     actions[names[0]].reset().play()
     setIsOpen(true)
@@ -97,18 +106,25 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
     nodes['ElectricMotor_0362'].scale.z = 0
 
     if (isOpen) {
-      setSide(-0.05)
+      //setSide(-0.05)
+      actions[names[5]].timeScale = -1
+      actions[names[0]].timeScale = -1
       if (!hasRotor) {
         actions[names[5]].reset().play()
         setHasRotor(true)
       }
     } else {
-      setSide(0.05)
+      actions[names[5]].timeScale = 1
+      actions[names[0]].timeScale = 1
+      //setSide(0.05)
       animateStart()
     }
   }
   const animateType1 = async () => {
-    setSide(0.05)
+    //setSide(0.05)
+    actions[names[5]].timeScale = 1
+    actions[names[0]].timeScale = 1
+
     if (isOpen && hasRotor) {
       actions[names[5]].reset().play()
     } else {
@@ -139,8 +155,9 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
     }
   }
   const animateType3 = async () => {
-    setSide(-0.05)
-
+    //setSide(-0.05)
+    actions[names[0]].timeScale = -1
+    actions[names[5]].timeScale = -1
     if (isOpen) {
       if (hasRotor) {
         actions[names[0]].reset().play()
@@ -178,25 +195,24 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
   }
 
   const animatePower = async () => {
+    setSide(0.002)
     actions[names[3]].reset().play()
+    actions[names[4]].clampWhenFinished = false
     actions[names[4]].reset().play()
   }
 
   const animateSpeed = async () => {
-    actions[names[2]].reset().play()
+    //actions[names[2]].reset().play()
+    setRotation(true)
+    await delay(2000)
+    setRotation(false)
   }
 
   const cameRArEF = useRef()
 
   return (
     <PerspectiveCamera ref={cameRArEF}>
-      <primitive
-        receiveShadow
-        castShadow
-        ref={ref}
-        //onClick={animate}
-        object={motor}
-      />
+      <primitive receiveShadow castShadow ref={ref} object={motor} />
       <LightModule />
     </PerspectiveCamera>
   )
@@ -253,20 +269,14 @@ function Plane({ ...props }) {
 
 function Loader() {
   const { active, progress } = useProgress()
-  const transition = useTransition(active, {
-    from: { opacity: 1, progress: 0 },
-    leave: { opacity: 0 },
-    update: { progress },
-  })
-  return transition(
-    ({ progress, opacity }, active) =>
-      active && (
-        <a.div className="loading" style={{ opacity }}>
-          <div className="loading-bar-container">
-            <a.div className="loading-bar" style={{ width: progress }}></a.div>
-          </div>
-        </a.div>
-      )
+
+  return (
+    active && (
+      <div className={classes.loader}>
+        <CircularProgress />
+        {progress.toFixed(2)}%
+      </div>
+    )
   )
 }
 

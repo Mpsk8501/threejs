@@ -180,6 +180,7 @@ export const Calculator = ({ tag_h1 = null, isActive = true, coeff }) => {
   const [inputValue, setInputValue] = useState(1.001)
 
   const handleSliderChange = (event, newValue) => {
+    setAnimSpeed(animSpeed + 1)
     setSliderValue(newValue)
   }
 
@@ -272,7 +273,7 @@ export const Calculator = ({ tag_h1 = null, isActive = true, coeff }) => {
         <div className={'containerNew'}>
           <div className={classes.main}>
             <header className={classes.title}>
-              <h1>{tag_h1 || 'Расчитать онлайн'}</h1>
+              <h1>Расчитать ремонт онлайн</h1>
             </header>
             <div className={classes.input}>
               <p>Замена обмотки:</p>

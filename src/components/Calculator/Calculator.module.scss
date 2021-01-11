@@ -1,5 +1,8 @@
 .Calculator {
   .main {
+    color: white !important;
+    background-color: gray !important;
+    padding: 0 10px;
     &:last-of-type {
       padding-top: 15px;
     }
@@ -39,7 +42,7 @@
           transform: rotate(90deg);
           height: 20px;
           width: 20px;
-          fill: var(--base-accentColor);
+          fill: white;
         }
 
         &:hover {
@@ -51,7 +54,8 @@
           min-height: 40px;
           //text-transform: capitalize;
           cursor: pointer;
-          border: 1px solid #c4c4c4;
+          //border: 1px solid #c4c4c4;
+
           display: flex;
           align-items: center;
           justify-content: flex-start;
@@ -79,9 +83,9 @@
           position: absolute;
           height: 0;
           overflow: hidden;
-          background-color: var(--white-color);
+          //background-color: var(--white-color);
+          background-color: rgba(255, 255, 255, 0.4);
           z-index: 12;
-          border-top: none;
 
           ul {
             li {
@@ -105,7 +109,7 @@
                 //border-bottom: none;
               }
               &:hover {
-                color: var(--base-accentColor);
+                color: #0072d0;
                 text-decoration: underline;
                 // color: var(--white-color);
                 // background-color: var(--baseBg);
@@ -113,7 +117,7 @@
             }
 
             .activeLi {
-              color: var(--base-accentColor);
+              color: #009ed0;
               text-decoration: underline;
             }
           }
@@ -124,7 +128,7 @@
           height: auto;
           box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
 
-          border: 1px solid #c4c4c4;
+          //border: 1px solid #c4c4c4;
           border-top: none;
         }
       }
@@ -153,11 +157,13 @@
       display: flex;
       justify-content: space-between;
       padding-bottom: 20px;
+      position: relative;
+      z-index: 11;
 
       p {
         font-size: 14px;
         line-height: 17px;
-
+        color: white;
         span {
           font-weight: 600;
         }
@@ -197,10 +203,10 @@
           z-index: 2;
           position: absolute;
           width: 120px;
-          padding-right: 10px;
+          padding-right: 12px;
           height: 100%;
           right: 0;
-          background-color: rgba(255, 255, 255, 0.75);
+          //background-color: rgba(255, 255, 255, 0.75);
 
           .slider {
             height: 210px;
@@ -219,14 +225,15 @@
 
               span {
                 font-size: 14px;
-                color: #000000;
-                opacity: 0.35;
+                color: white;
+                //opacity: 0.35;
                 cursor: pointer;
               }
 
               .spanActive {
                 font-size: 18px;
-                color: var(--base-accentColor);
+                //color: var(--base-accentColor);
+                color: #00d1ff;
                 opacity: 1;
                 font-weight: 500;
               }
@@ -269,7 +276,7 @@
         font-size: 14px;
         font-weight: 500;
         text-transform: uppercase;
-        background-color: var(--button-bgColor);
+        background-color: #009ed0;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -277,7 +284,7 @@
         transition: background-color 0.4s, box-shadow 0.4s;
         box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
         &:hover {
-          background-color: var(--button-hoverBG);
+          background-color: #0072d0;
           box-shadow: var(--button-Shadow);
         }
 
