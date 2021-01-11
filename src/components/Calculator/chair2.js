@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useState, useRef } from 'react'
 import { Canvas, useFrame, useThree } from 'react-three-fiber'
-import { PMREMGenerator } from 'three'
+import { Clock, PMREMGenerator } from 'three'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import classes from './chair.module.scss'
 import {
@@ -35,14 +35,14 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
   const [rotation, setRotation] = useState(false)
 
   //console.log(nodes)
-
+  const clock = new Clock()
   useFrame(() => {
-    mixer.update(side)
+    const mixerUpdateDelta = clock.getDelta()
+    mixer.update(mixerUpdateDelta)
+
     if (rotation) {
       nodes['Rotor'].rotation.z += 0.1
     }
-
-    //motor.rotation.y += 0.005
   })
   const loader = new RGBELoader()
 
