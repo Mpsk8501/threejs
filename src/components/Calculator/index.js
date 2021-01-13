@@ -270,7 +270,7 @@ export const Calculator = ({ tag_h1 = null, isActive = true, coeff }) => {
   return (
     <>
       <div className={classes.Calculator}>
-        <div className={'containerNew'}>
+        <div className={'containerNew calkBg'}>
           <div className={classes.main}>
             <header className={classes.title}>
               <h1>Расчитать ремонт онлайн</h1>
