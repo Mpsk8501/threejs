@@ -22,7 +22,7 @@
       align-items: center;
       flex-wrap: wrap;
       margin-bottom: 30px;
-      z-index: 2;
+      z-index: 22;
 
       p {
         padding-bottom: 10px;
@@ -48,7 +48,7 @@
         }
 
         &:hover {
-          box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+          box-shadow: inset 2px 2px 8px rgba(0, 0, 0, 0.35);
         }
 
         .filter {
@@ -86,8 +86,9 @@
           height: 0;
           overflow: hidden;
           //background-color: var(--white-color);
-          background-color: rgba(255, 255, 255, 0.4);
-          z-index: 12;
+          //background-color: rgba(255, 255, 255, 0.4);
+          background-color: rgba(160, 160, 160, 0.7);
+          z-index: 22;
 
           ul {
             li {
@@ -99,7 +100,8 @@
               display: flex;
               align-items: center;
               //text-transform: uppercase;
-              margin: 0 20px;
+              //margin: 0 20px;
+              padding: 0 20px;
               border-bottom: 1px solid rgb(196, 196, 196);
 
               &:last-of-type {
@@ -111,7 +113,7 @@
                 //border-bottom: none;
               }
               &:hover {
-                color: #0072d0;
+                //color: #0072d0;
                 text-decoration: underline;
                 // color: var(--white-color);
                 // background-color: var(--baseBg);
@@ -119,7 +121,9 @@
             }
 
             .activeLi {
-              color: #009ed0;
+              //color: #009ed0;
+              color: 'white';
+              background-color: #009ed0;
               text-decoration: underline;
             }
           }
@@ -137,7 +141,7 @@
 
       .wrapperActive {
         @extend .wrapper;
-        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+        box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.25);
       }
 
       h3 {
@@ -270,7 +274,7 @@
       margin-top: 15px;
       display: flex;
       justify-content: space-between;
-      padding: 0 10px 10px;
+      padding: 0 10px 25px;
       width: 100%;
 
       div {
@@ -288,7 +292,7 @@
         transition: background-color 0.4s, box-shadow 0.4s;
         box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
         &:hover {
-          background-color: #0072d0;
+          background-color: #24aad3;
           box-shadow: var(--button-Shadow);
         }
 
@@ -353,7 +357,7 @@
 
       .input {
         position: relative;
-        z-index: 2;
+        z-index: 22;
         h2 {
           padding-bottom: 0;
           max-width: 100px;
