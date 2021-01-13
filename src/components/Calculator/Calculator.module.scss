@@ -32,7 +32,7 @@
         position: relative;
         transition: box-shadow 0.3s;
         width: 100%;
-        box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
 
         svg {
           cursor: pointer;
@@ -289,18 +289,20 @@
         }
 
         &:first-of-type {
-          border: 1px solid #c4c4c4;
+          //border: 1px solid #c4c4c4;
+          //border: 1px solid transparent;
           cursor: default;
-          background-color: var(--white-color);
+          //background-color: var(--white-color);
+          background-color: transparent;
           border-right: none;
-          box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.25);
+          box-shadow: inset 2px 2px 8px rgba(0, 0, 0, 0.25);
           font-size: 24px;
           font-weight: 500;
-          color: #000000;
+          //color: #000000;
 
-          &:hover {
-            background-color: transparent;
-          }
+          // &:hover {
+          //   background-color: transparent;
+          // }
         }
       }
 
@@ -349,6 +351,10 @@
         }
         p {
           display: inline-block;
+          padding-bottom: 0;
+
+          width: 28%;
+          text-align: right;
         }
         .wrapper {
           width: 70%;
@@ -374,7 +380,7 @@
           font-size: 12px;
 
           &:first-of-type {
-            font-size: 18px;
+            //font-size: 18px;
           }
         }
       }

@@ -195,7 +195,6 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
   }
 
   const animatePower = async () => {
-    setSide(0.002)
     actions[names[3]].reset().play()
     actions[names[4]].clampWhenFinished = false
     actions[names[4]].reset().play()
@@ -274,7 +273,8 @@ function Loader() {
     active && (
       <div className={classes.loader}>
         <CircularProgress />
-        {progress.toFixed(2)}%
+        &nbsp;
+        {progress.toFixed(0)}%
       </div>
     )
   )
