@@ -252,7 +252,7 @@ function Plane({ ...props }) {
       <OrbitControls
         minPolarAngle={1.4}
         maxPolarAngle={1.63}
-        minDistance={1}
+        minDistance={1.5}
         maxDistance={3}
         ref={ref}
         autoRotate
@@ -287,7 +287,7 @@ const chair2 = ({ animType = 2, animPower, animSpeed }) => {
         style={{ background: 'grey' }}
         colorManagement
         shadowMap
-        camera={{ position: [1, 1, 1], fov: 25, far: 10 }}
+        camera={{ position: [1, 1, 1], fov: 35, far: 10 }}
       >
         <Suspense fallback={null}>
           <Asset
