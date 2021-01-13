@@ -3,6 +3,10 @@ import { Canvas, useFrame, useThree } from 'react-three-fiber'
 import { Clock, PMREMGenerator } from 'three'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import classes from './chair.module.scss'
+
+import { createMuiTheme } from '@material-ui/core/styles'
+import { ThemeProvider } from '@material-ui/styles'
+
 import {
   useGLTF,
   useAnimations,
@@ -18,6 +22,15 @@ const delay = (ms) =>
       resolve()
     }, ms)
   })
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      // Purple and green play nicely together.
+      main: '#fff',
+    },
+  },
+})
 
 const Asset = ({ url, animType, animPower, animSpeed }) => {
   const { gl, scene } = useThree()
@@ -71,6 +84,7 @@ const Asset = ({ url, animType, animPower, animSpeed }) => {
 
     animateStart()
     setNeedUpdate(true)
+    motor.rotation.y = 3
   }, [])
 
   useEffect(() => {
@@ -272,7 +286,9 @@ function Loader() {
   return (
     active && (
       <div className={classes.loader}>
-        <CircularProgress />
+        <ThemeProvider theme={theme}>
+          <CircularProgress />
+        </ThemeProvider>
         &nbsp;
         {progress.toFixed(0)}%
       </div>
